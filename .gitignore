@@ -2,8 +2,10 @@
 logs
 *.log
 
+private/
+
 # Vite build
-build
+build/
 
 # Dependency directories
 node_modules/
