@@ -1,7 +1,7 @@
 # MMO-JS
  MMO using THREE JS & more
 
-# Run localy
+# Run locally
 
 ```bash 
 npm install
