@@ -3,42 +3,47 @@ import TWEEN from "@tweenjs/tween.js";
 
 export default class Process {
     renderer;
-    scene;
-    camera;
     clock;
-    lod;
 
-    queue = [];
     renderID;
+
+    static scene;
+    static camera;
+    static lod;
+
+    static queue = [];
 
     constructor ({ scene, camera }) {
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.frustumCulled = true;
+        this.renderer.gammaOutput = true;
+        this.renderer.gammaFactor = 1;
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         document.body.appendChild(this.renderer.domElement);
 
-        this.lod = new THREE.LOD();
         this.clock = new THREE.Clock(true);
-
-        this.scene = scene;
-        this.camera = camera;
+        this.clock.start();
+        
+        Process.scene = scene;
+        Process.camera = camera;
+        Process.lod = new THREE.LOD();
     }
 
-    getSceneChildren () {
-        return this.scene.children;
+    static getSceneObjects () {
+        return Process.scene.children;
     }
     
-    addToQueue (callback) {
-        this.queue.push(callback);
+    static addToQueue (callback) {
+        Process.queue.push(callback);
         return true;
     }
 
-    addToScene (object) {
-        if(this.scene) {
-            this.scene.add(object);
+    static addToScene (object) {
+        if(Process.scene) {
+            Process.scene.add(object);
             return true;
         } else {
             console.error("No current scene");
@@ -47,14 +52,15 @@ export default class Process {
     }
 
     render () {
-        if(!this.scene || !this.camera) {
+        if(!Process.scene || !Process.camera) {
             cancelAnimationFrame(this.renderID);
             return console.error("Scene or Camera unloaded");
         }
 
         TWEEN.update();
-        this.queue.filter(callback => callback(this, this.clock.getDelta()) !== false);
-        this.renderer.render(this.scene, this.camera);
-        this.renderID = requestAnimationFrame(this.render.bind(this));
+        Process.queue.filter(callback => callback(this.clock) !== false);
+
+        this.renderer.render(Process.scene, Process.camera);
+        this.renderID = requestAnimationFrame(() => this.render());
     }
 }

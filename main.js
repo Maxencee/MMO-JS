@@ -1,6 +1,6 @@
 import PlayerController from "./src/PlayerController";
 import LightEnvironment from "./src/classes/LightEnvironment";
-import PlayerCamera from "./src/classes/PlayerCamera";
+import PlayerCamera from "./src/PlayerCamera";
 import Process from "./src/classes/Process";
 import Scene from "./src/classes/Scene";
 import BoundingBox from "./src/entities/BoundingBox";
@@ -15,7 +15,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
         camera: new PlayerCamera()
     });
 
-    const controls = new OrbitControls(World.camera, World.renderer.domElement);
+    const controls = new OrbitControls(Process.camera, World.renderer.domElement);
     controls.enablePan = false;
     controls.maxDistance = 20;
     controls.minDistance = 5;
@@ -25,23 +25,21 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
     controls.maxDistance = 12;
     controls.rotateSpeed = 1;
     
-    World.addToQueue(controls.update);
+    Process.addToQueue(controls.update);
 
-    World.addToScene(new LightEnvironment(0xffffff, 2));
+    Process.addToScene(new LightEnvironment(0xffffff, 2));
     
     const floor = new Floor();
-    World.addToScene(floor);
+    Process.addToScene(floor);
 
     const wall = new BoundingBox(5, 4, 1, 0xff6b26);
     wall.position.x = 4;
     wall.position.z = 3;
-    World.addToScene(wall);
+    Process.addToScene(wall);
 
     const player = new PlayerController();
-    player.mountCamera(World.camera, World.getSceneChildren.bind(World));
-    player.addCursor(World.scene);
 
-    World.addToScene(player);
+    Process.addToScene(player);
 
     World.render();
 })();
