@@ -3,7 +3,7 @@ import { AxesHelper, BoxGeometry, GridHelper, Mesh, MeshStandardMaterial } from 
 export default class Floor extends Mesh {
   constructor() {
     super(
-      new BoxGeometry(30, 1, 30),
+      new BoxGeometry(25, 1, 25),
       new MeshStandardMaterial({ color: 0x717171 })
     );
 
@@ -11,13 +11,13 @@ export default class Floor extends Mesh {
     axesHelper.position.y = 0.51;
     this.add(axesHelper);
 
-    const gridHelper = new GridHelper(30, 30, 0x333333);
+    const gridHelper = new GridHelper(25, 25, 0x333333);
     gridHelper.position.y = 0.509;
     this.add(gridHelper);
 
-    this.receiveShadow = true;
     this.position.set(0, -0.5, 0);
-
-    this.isFloorable = true;
   }
+
+  isFloorable = true;
+  receiveShadow = true;
 }

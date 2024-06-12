@@ -11,11 +11,6 @@ export default class Process {
     queue = [];
     renderID;
 
-    groups = {
-        floorable: [],
-        collidable: []
-    }
-
     constructor ({ scene, camera }) {
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.frustumCulled = true;
@@ -32,21 +27,8 @@ export default class Process {
         this.camera = camera;
     }
 
-    addToGroup (object, group) {
-        if(this.groups[group]) {
-            this.groups[group].push(object);
-            return true;
-        }
-
-        return false;
-    }
-
-    getGroup (group) {
-        if(this.groups[group]) {
-            return this.groups[group];
-        }
-
-        return null;
+    getSceneChildren () {
+        return this.scene.children;
     }
     
     addToQueue (callback) {

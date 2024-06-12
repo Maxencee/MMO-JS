@@ -30,16 +30,18 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
     World.addToScene(new LightEnvironment(0xffffff, 2));
     
     const floor = new Floor();
-    World.addToGroup(floor, 'floorable');
     World.addToScene(floor);
 
     const wall = new BoundingBox(5, 4, 1, 0xff6b26);
-    wall.position.x = 4.5;
-    wall.position.z = 3.5;
-    World.addToGroup(wall, 'collidable');
+    wall.position.x = 4;
+    wall.position.z = 3;
     World.addToScene(wall);
 
-    new PlayerController(World);
+    const player = new PlayerController();
+    player.mountCamera(World.camera, World.getSceneChildren.bind(World));
+    player.addCursor(World.scene);
+
+    World.addToScene(player);
 
     World.render();
 })();
