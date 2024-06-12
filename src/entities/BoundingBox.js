@@ -10,7 +10,7 @@ export default class BoundingBox extends Mesh {
     this.position.set(0, height/2, 0);
   }
 
-  receiveShadow = true;
-  castShadow = true;
+  receiveShadow = false;
+  castShadow = false;
   isCollidable = true;
 }

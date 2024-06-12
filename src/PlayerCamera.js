@@ -3,7 +3,7 @@ import * as THREE from "three";
 export default class PlayerCamera extends THREE.PerspectiveCamera {
   static fov = 75;
   static near = 0.1;
-  static far = 1000;
+  static far = 2000;
 
   constructor() {
     super(
@@ -13,7 +13,6 @@ export default class PlayerCamera extends THREE.PerspectiveCamera {
       PlayerCamera.far
     );
 
-    this.position.set(6, 4, 6);
     this.lookAt(new THREE.Vector3(0, 0, 0));
   }
 

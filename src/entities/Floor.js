@@ -3,7 +3,7 @@ import { AxesHelper, BoxGeometry, GridHelper, Mesh, MeshStandardMaterial } from 
 export default class Floor extends Mesh {
   constructor() {
     super(
-      new BoxGeometry(25, 1, 25),
+      new BoxGeometry(45, 1, 45),
       new MeshStandardMaterial({ color: 0x717171 })
     );
 

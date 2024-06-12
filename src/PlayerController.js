@@ -23,9 +23,10 @@ export default class PlayerController extends PropDynamic {
   line;
 
   speed = 200;
+  interactableLength = 2;
 
   constructor() {
-    super('assets/models/player.fbx', {
+    super("assets/models/player.fbx", {
       position: new Vector3(0, -0.8, 0),
       scale: new Vector3(0.032, 0.032, 0.032),
       material: new MeshBasicMaterial({ color: 0xffcaa8 }),
@@ -33,19 +34,19 @@ export default class PlayerController extends PropDynamic {
     });
   }
 
-  onModelLoaded () {
+  onModelLoaded() {
     this.mountCamera();
     this.addCursor();
 
     Process.addToQueue((clock) => {
-      this.mixer.update(clock.getDelta())
+      this.mixer.update(clock.getDelta());
     });
-    
+
     this.animations = {
       idle: this.mixer.clipAction(this.mixer.getAction("Armature|Idle")),
       walk: this.mixer.clipAction(this.mixer.getAction("Armature|Walking")),
       T: this.mixer.clipAction(this.mixer.getAction("Armature|T-Pose")),
-    }
+    };
 
     this.animations.idle.play();
   }
@@ -103,27 +104,28 @@ export default class PlayerController extends PropDynamic {
   }
 
   moveToCursor(event) {
-    if (event.button !== 2 || !this.canMove) return;
+    if (event.button !== 2) return;
+    if(this.interactableTarget) return this.interactableTarget.use(this);
+    if(!this.canMove) return;
 
-    let intersects = Process.camera.intersect(
-      event,
-      Process.getSceneObjects()
-    );
-    
+    let intersects = Process.camera.intersect(event, Process.getSceneObjects());
+
     let target = intersects.find((o) => o.object.isFloorable);
     if (target) {
-      this.target.position.copy(this.pointer.position);
-      this.target.visible = true;
-
       let start = this.position.clone();
       let target = this.pointer.position.clone();
       target.y = start.y;
+
+      if (start.equals(target)) return;
+
+      this.target.position.copy(this.pointer.position);
+      this.target.visible = true;
 
       if (this.tween) this.tween.stop();
 
       this.lookAt(target);
 
-      if(!this.animations.walk.isRunning()) {
+      if (!this.animations.walk.isRunning()) {
         this.mixer.stopAllAction();
         this.animations.walk.play();
       }
@@ -136,42 +138,45 @@ export default class PlayerController extends PropDynamic {
         .delay(0)
         .to(target, (distance * 1000) / (this.speed / 100))
         .easing(TWEEN.Easing.Linear.None)
-        .onUpdate(
-          (position, progress) => {
-            let [collisions, dirLength] = this.getCollisions(this.position.clone(), [start, target]);
-            let collide = collisions.find(o => o.object.isCollidable);
+        .onUpdate((position, progress) => {
+          let [collisions, dirLength] = this.getCollisions(
+            this.position.clone(),
+            [start, target]
+          );
+          let collide = collisions.find((o) => o.object.isCollidable);
 
-            if (collide && collide.distance < dirLength / 2) {
-              this.material.color = new Color(0xf9ff47);
-              this.tween.stop();
-              this.target.visible = false;
-
-              this.mixer.stopAllAction();
-              this.animations.idle.play();
-            } else {
-              this.material.color = new Color(0x4287f5);
-
-              Process.camera.position.add(new Vector3(
-                (position.x - this.position.x),
-                0, 
-                (position.z - this.position.z)
-              ));
-
-              this.position.copy(position);
-
-              this.target.visible = true;
-            }
-
-            this.updateLine();
-          }
-        )
-        .onComplete(
-          () => {
+          if (collide && collide.distance < dirLength / 2) {
+            this.material.color = new Color(0xf9ff47);
+            this.tween.stop();
             this.target.visible = false;
+
             this.mixer.stopAllAction();
             this.animations.idle.play();
+          } else {
+            this.material.color = new Color(0x4287f5);
+
+            Process.camera.position.add(
+              new Vector3(
+                position.x - this.position.x,
+                0,
+                position.z - this.position.z
+              )
+            );
+
+            Process.camera.updateMatrixWorld();
+
+            this.position.copy(position);
+
+            this.target.visible = true;
           }
-        )
+
+          this.updateLine();
+        })
+        .onComplete(() => {
+          this.target.visible = false;
+          this.mixer.stopAllAction();
+          this.animations.idle.play();
+        })
         .start();
     }
   }
@@ -184,16 +189,36 @@ export default class PlayerController extends PropDynamic {
   }
 
   setCursor(event) {
-    let intersects = Process.camera.intersect(
-      event,
-      Process.getSceneObjects()
-    );
+    let intersects = Process.camera.intersect(event, Process.getSceneObjects());
 
+    let interactable = intersects.find((o) => o.object.isInteractable);
     let target = intersects.find((o) => o.object.isFloorable);
 
+    if (interactable) {
+      let distance = this.position.distanceTo(interactable.object.position);
+
+      if(distance > this.interactableLength) {
+        if(this.interactableTarget) this.interactableTarget.onCursorLeave();
+        this.interactableTarget = null;
+      }
+      else if (this.interactableTarget) {
+        if (this.interactableTarget.id === interactable.object.id) return;
+        this.interactableTarget.onCursorLeave();
+      } else {
+        this.interactableTarget = interactable.object;
+        this.interactableTarget.onCursorOver();
+      }
+    } else if (this.interactableTarget) {
+      this.interactableTarget.onCursorLeave();
+      this.interactableTarget = null;
+    }
+
     if (target) {
-      let [collisions, dirLength] = this.getCollisions(this.position.clone(), [this.position.clone(), target.point]);
-      let collide = collisions.find(o => o.object.isCollidable);
+      let [collisions, dirLength] = this.getCollisions(this.position.clone(), [
+        this.position.clone(),
+        target.point,
+      ]);
+      let collide = collisions.find((o) => o.object.isCollidable);
 
       if (collide) {
         this.line.material.color = new Color(0xff2e2e);
@@ -205,10 +230,8 @@ export default class PlayerController extends PropDynamic {
         this.canMove = true;
       }
 
-      this.pointer.position.x =
-        Math.round(target.point.x)
-      this.pointer.position.z =
-        Math.round(target.point.z)
+      this.pointer.position.x = Math.round(target.point.x);
+      this.pointer.position.z = Math.round(target.point.z);
 
       this.updateLine();
     }
