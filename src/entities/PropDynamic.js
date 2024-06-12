@@ -25,15 +25,14 @@ export default class PropDynamic extends BoundingBox {
         let mesh;
         const loader = isFBX ? new FBXLoader() : new GLTFLoader();
         loader.load(model, (model) => {
-            model.traverse(node => {
+            mesh = isFBX ? model : model.scene;
+            mesh.traverse(node => {
                 if(node.isMesh) {
                     if(material) node.material = material;
                     if(options.shadow >= PropDynamic.CAST_SHADOW) node.castShadow = true;
                     if(options.shadow == PropDynamic.RECEIVE_SHADOW) node.receiveShadow = true;
                 }
             });
-
-            mesh = isFBX ? model : model.scene;
 
             if(options.position) mesh.position.copy(options.position);
             if(options.scale) mesh.scale.copy(options.scale);
@@ -48,13 +47,13 @@ export default class PropDynamic extends BoundingBox {
             
             const bounding = new THREE.Box3().setFromObject(mesh); 
             const size = bounding.getSize(new THREE.Vector3());
-            this.position.set(0, size.y/2, 0);
+            this.position.y = size.y/2;
             this.geometry.scale(size.x, size.y, size.z);
 
             this.onModelLoaded();
         });
 
-        super(1, 1, 1, 0xffffff);
+        super(1, 1, 1, options.boundingColor || 0xffffff);
     }
 
     onModelLoaded () { }

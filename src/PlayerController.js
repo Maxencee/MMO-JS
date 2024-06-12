@@ -28,7 +28,7 @@ export default class PlayerController extends PropDynamic {
     super('assets/models/player.fbx', {
       position: new Vector3(0, -0.8, 0),
       scale: new Vector3(0.032, 0.032, 0.032),
-      material: new MeshBasicMaterial({ color: 0x4287f5 }),
+      material: new MeshBasicMaterial({ color: 0xffcaa8 }),
       shadow: PropDynamic.CAST_SHADOW
     });
 
