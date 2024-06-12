@@ -49,7 +49,7 @@ import BoundingBoxInteractable from "./src/entities/BoundingBoxInteractable";
     const smallWall = new BoundingBoxInteractable(3, 0.5, 1, 0xff4ff1);
 
     smallWall.position.x = 4;
-    smallWall.position.z = 10;
+    smallWall.position.z = -4;
     Process.addToScene(smallWall);
 
     const player = new PlayerController();
