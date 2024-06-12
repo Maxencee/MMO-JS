@@ -17,17 +17,17 @@ import { Vector3 } from "three";
         camera: new PlayerCamera()
     });
 
-    const controls = new OrbitControls(Process.camera, World.renderer.domElement);
-    controls.enablePan = false;
-    controls.maxDistance = 20;
-    controls.minDistance = 5;
+    // const controls = new OrbitControls(Process.camera, World.renderer.domElement);
+    // controls.enablePan = false;
+    // controls.maxDistance = 20;
+    // controls.minDistance = 5;
     
-    controls.zoomSpeed = 2;
-    controls.minDistance = 4;
-    controls.maxDistance = 12;
-    controls.rotateSpeed = 1;
+    // controls.zoomSpeed = 2;
+    // controls.minDistance = 4;
+    // controls.maxDistance = 12;
+    // controls.rotateSpeed = 1;
     
-    Process.addToQueue(controls.update);
+    // Process.addToQueue(controls.update);
 
     Process.addToScene(new LightEnvironment(0xffffff, 2));
     
@@ -37,7 +37,7 @@ import { Vector3 } from "three";
     const wall = new PropDynamic('assets/models/wall/scene.gltf', {
         boundingColor: 0xff6b26,
         scale: new Vector3(0.005, 0.005, 0.005),
-        position: new Vector3(0, -2.1, 0.4),
+        position: new Vector3(0, -1.85, 0.4),
         shadow: PropDynamic.RECEIVE_SHADOW
     });
 
@@ -45,9 +45,17 @@ import { Vector3 } from "three";
     wall.position.z = 3;
     Process.addToScene(wall);
 
+    const smallWall = new BoundingBox(3, 0.5, 1, 0xff4ff1);
+
+    smallWall.position.x = 4;
+    smallWall.position.z = 10;
+    Process.addToScene(smallWall);
+
     const player = new PlayerController();
 
     Process.addToScene(player);
+
+    document.addEventListener('contextmenu', (evt) => evt.preventDefault());
 
     World.render();
 })();

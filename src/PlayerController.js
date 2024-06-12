@@ -22,7 +22,7 @@ export default class PlayerController extends PropDynamic {
   target;
   line;
 
-  speed = 400;
+  speed = 200;
 
   constructor() {
     super('assets/models/player.fbx', {
@@ -31,12 +31,12 @@ export default class PlayerController extends PropDynamic {
       material: new MeshBasicMaterial({ color: 0xffcaa8 }),
       shadow: PropDynamic.CAST_SHADOW
     });
-
-    this.mountCamera();
-    this.addCursor();
   }
 
   onModelLoaded () {
+    this.mountCamera();
+    this.addCursor();
+
     Process.addToQueue((clock) => {
       this.mixer.update(clock.getDelta())
     });
@@ -55,6 +55,11 @@ export default class PlayerController extends PropDynamic {
   mountCamera() {
     document.addEventListener("mousedown", this.moveToCursor.bind(this));
     document.addEventListener("mousemove", this.setCursor.bind(this));
+
+    Process.camera.position.x = -3;
+    Process.camera.position.z = -3;
+    Process.camera.position.y = 6;
+    Process.camera.lookAt(this.position);
   }
 
   addCursor() {
@@ -107,19 +112,12 @@ export default class PlayerController extends PropDynamic {
     
     let target = intersects.find((o) => o.object.isFloorable);
     if (target) {
-      // event.worldTarget = target.object;
       this.target.position.copy(this.pointer.position);
       this.target.visible = true;
-
-      //   MOVE
 
       let start = this.position.clone();
       let target = this.pointer.position.clone();
       target.y = start.y;
-
-      let distance = start.distanceTo(target);
-      let direction = new Vector3();
-      direction.subVectors(start, target).normalize();
 
       if (this.tween) this.tween.stop();
 
@@ -130,32 +128,20 @@ export default class PlayerController extends PropDynamic {
         this.animations.walk.play();
       }
 
+      let distance = start.distanceTo(target);
+      let direction = new Vector3();
+      direction.subVectors(start, target).normalize();
+
       this.tween = new TWEEN.Tween(start)
         .delay(0)
         .to(target, (distance * 1000) / (this.speed / 100))
         .easing(TWEEN.Easing.Linear.None)
         .onUpdate(
-          function (position, progress) {
-            let originPoint = this.position.clone();
-            let directionVector = new Vector3();
-            directionVector.subVectors(target, start).normalize();
+          (position, progress) => {
+            let [collisions, dirLength] = this.getCollisions(this.position.clone(), [start, target]);
+            let collide = collisions.find(o => o.object.isCollidable);
 
-            let ray = new Raycaster(
-              originPoint,
-              directionVector.clone().normalize()
-            );
-
-            let collisionResults = ray.intersectObjects(
-              Process.getSceneObjects(),
-              true
-            );
-
-            let collidable = collisionResults.find(o => o.object.isCollidable);
-
-            if (
-              collidable &&
-              collidable.distance < directionVector.length()
-            ) {
+            if (collide && collide.distance < dirLength / 2) {
               this.material.color = new Color(0xf9ff47);
               this.tween.stop();
               this.target.visible = false;
@@ -164,19 +150,27 @@ export default class PlayerController extends PropDynamic {
               this.animations.idle.play();
             } else {
               this.material.color = new Color(0x4287f5);
+
+              Process.camera.position.add(new Vector3(
+                (position.x - this.position.x),
+                0, 
+                (position.z - this.position.z)
+              ));
+
               this.position.copy(position);
+
               this.target.visible = true;
             }
 
             this.updateLine();
-          }.bind(this)
+          }
         )
         .onComplete(
-          function () {
+          () => {
             this.target.visible = false;
             this.mixer.stopAllAction();
             this.animations.idle.play();
-          }.bind(this)
+          }
         )
         .start();
     }
@@ -196,20 +190,12 @@ export default class PlayerController extends PropDynamic {
     );
 
     let target = intersects.find((o) => o.object.isFloorable);
+
     if (target) {
-      let directionVector = new Vector3();
-      let start = this.position.clone();
-      directionVector.subVectors(target.point, start).normalize();
+      let [collisions, dirLength] = this.getCollisions(this.position.clone(), [this.position.clone(), target.point]);
+      let collide = collisions.find(o => o.object.isCollidable);
 
-      let ray = new Raycaster(start, directionVector.clone().normalize());
-      let collisionResults = ray.intersectObjects(
-        Process.getSceneObjects(),
-        true
-      );
-
-      let collidable = collisionResults.find((o) => o.object.isCollidable);
-
-      if (collidable) {
+      if (collide) {
         this.line.material.color = new Color(0xff2e2e);
         this.pointer.material.color = new Color(0xff2e2e);
         this.canMove = false;
