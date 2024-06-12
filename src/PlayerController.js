@@ -10,12 +10,13 @@ import {
   RingGeometry,
   Vector3,
 } from "three";
-import TWEEN from "@tweenjs/tween.js";
-import BoundingBox from "./entities/BoundingBox";
 
-export default class PlayerController extends BoundingBox {
+import TWEEN from "@tweenjs/tween.js";
+import PropDynamic from "./entities/PropDynamic";
+import Process from "./classes/Process";
+
+export default class PlayerController extends PropDynamic {
   canMove = true;
-  camera;
 
   pointer;
   target;
@@ -24,20 +25,39 @@ export default class PlayerController extends BoundingBox {
   speed = 400;
 
   constructor() {
-    super(1, 1.75, 1, 0x6687ff);
+    super('assets/models/player.fbx', {
+      position: new Vector3(0, -0.8, 0),
+      scale: new Vector3(0.032, 0.032, 0.032),
+      material: new MeshBasicMaterial({ color: 0x4287f5 }),
+      shadow: PropDynamic.CAST_SHADOW
+    });
+
+    this.mountCamera();
+    this.addCursor();
+  }
+
+  onModelLoaded () {
+    Process.addToQueue((clock) => {
+      this.mixer.update(clock.getDelta())
+    });
+    
+    this.animations = {
+      idle: this.mixer.clipAction(this.mixer.getAction("Armature|Idle")),
+      walk: this.mixer.clipAction(this.mixer.getAction("Armature|Walking")),
+      T: this.mixer.clipAction(this.mixer.getAction("Armature|T-Pose")),
+    }
+
+    this.animations.idle.play();
   }
 
   isCollidable = false;
 
-  mountCamera(camera, callback) {
-    this.camera = camera;
-    this.camera.getSceneChildren = callback;
-
+  mountCamera() {
     document.addEventListener("mousedown", this.moveToCursor.bind(this));
     document.addEventListener("mousemove", this.setCursor.bind(this));
   }
 
-  addCursor(scene) {
+  addCursor() {
     const pointerMaterial = new MeshBasicMaterial({ color: 0xffffff });
     pointerMaterial.polygonOffset = true;
     pointerMaterial.polygonOffsetFactor = -0.1;
@@ -63,21 +83,26 @@ export default class PlayerController extends BoundingBox {
     const targetM = new MeshBasicMaterial({ color: 0xffffff });
     targetM.polygonOffset = true;
     targetM.polygonOffsetFactor = -0.2;
-    this.target = new Mesh(new CircleGeometry(0.5), targetM);
+    targetM.transparent = true;
+    targetM.opacity = 0.65;
+
+    this.target = new Mesh(new CircleGeometry(0.35), targetM);
+    this.target.add(new Mesh(new RingGeometry(0.45, 0.5), targetM));
+
     this.target.rotateX(-Math.PI / 2);
     this.target.visible = false;
 
-    scene.add(this.pointer);
-    scene.add(this.line);
-    scene.add(this.target);
+    Process.scene.add(this.pointer);
+    Process.scene.add(this.line);
+    Process.scene.add(this.target);
   }
 
   moveToCursor(event) {
     if (event.button !== 2 || !this.canMove) return;
 
-    let intersects = this.camera.intersect(
+    let intersects = Process.camera.intersect(
       event,
-      this.camera.getSceneChildren()
+      Process.getSceneObjects()
     );
     
     let target = intersects.find((o) => o.object.isFloorable);
@@ -100,6 +125,11 @@ export default class PlayerController extends BoundingBox {
 
       this.lookAt(target);
 
+      if(!this.animations.walk.isRunning()) {
+        this.mixer.stopAllAction();
+        this.animations.walk.play();
+      }
+
       this.tween = new TWEEN.Tween(start)
         .delay(0)
         .to(target, (distance * 1000) / (this.speed / 100))
@@ -116,7 +146,7 @@ export default class PlayerController extends BoundingBox {
             );
 
             let collisionResults = ray.intersectObjects(
-              this.camera.getSceneChildren(),
+              Process.getSceneObjects(),
               true
             );
 
@@ -129,6 +159,9 @@ export default class PlayerController extends BoundingBox {
               this.material.color = new Color(0xf9ff47);
               this.tween.stop();
               this.target.visible = false;
+
+              this.mixer.stopAllAction();
+              this.animations.idle.play();
             } else {
               this.material.color = new Color(0x4287f5);
               this.position.copy(position);
@@ -141,6 +174,8 @@ export default class PlayerController extends BoundingBox {
         .onComplete(
           function () {
             this.target.visible = false;
+            this.mixer.stopAllAction();
+            this.animations.idle.play();
           }.bind(this)
         )
         .start();
@@ -155,9 +190,9 @@ export default class PlayerController extends BoundingBox {
   }
 
   setCursor(event) {
-    let intersects = this.camera.intersect(
+    let intersects = Process.camera.intersect(
       event,
-      this.camera.getSceneChildren()
+      Process.getSceneObjects()
     );
 
     let target = intersects.find((o) => o.object.isFloorable);
@@ -168,7 +203,7 @@ export default class PlayerController extends BoundingBox {
 
       let ray = new Raycaster(start, directionVector.clone().normalize());
       let collisionResults = ray.intersectObjects(
-        this.camera.getSceneChildren(),
+        Process.getSceneObjects(),
         true
       );
 
