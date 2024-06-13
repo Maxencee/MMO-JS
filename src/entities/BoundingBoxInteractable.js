@@ -1,35 +1,29 @@
-import { BackSide, BoxGeometry, FrontSide, Mesh, MeshStandardMaterial } from "three";
+import { FrontSide, Mesh, MeshStandardMaterial } from "three";
+import BoundingBox from "./BoundingBox";
 
-export default class BoundingBoxInteractable extends Mesh {
+export default class BoundingBoxInteractable extends BoundingBox {
   constructor(width, height, depth, color) {
-    super(
-      new BoxGeometry(width, height, depth),
-      new MeshStandardMaterial({ color: color })
-    );
-
-    this.position.set(0, height/2, 0);
+    super(width, height, depth, color);
   }
 
-  onCursorOver () {
-    console.log("cursor over");
+  outline;
+  receiveShadow = false;
+  castShadow = false;
+  isInteractable = true;
+  interactableLength = 1;
+  
+  interactableOver () {
     let outlineMaterial = new MeshStandardMaterial({ color: 0xffffff, side: FrontSide, transparent: true, opacity: 0.5, emissive: 0xffffff, emissiveIntensity: 5.0 });
-    let outlineMesh = new Mesh(this.geometry, outlineMaterial);
-    // outlineMesh.scale.multiplyScalar(1.05);
-    this.outline = outlineMesh;
-    this.add(outlineMesh);
+    this.outline = new Mesh(this.geometry, outlineMaterial);
+    this.add(this.outline);
   }
 
-  onCursorLeave () {
-    console.log("cursor leaved");
+  interactableLeaveRange () {
     this.outline?.removeFromParent();
   }
 
-  use (interactor) {
-    console.log(interactor);
+  interact (interactor) {
+    if(interactor.animations.walk.isRunning()) return;
+    interactor.playAction.call(interactor, 'dance');
   }
-
-  receiveShadow = false;
-  castShadow = false;
-  isCollidable = true;
-  isInteractable = true;
 }
