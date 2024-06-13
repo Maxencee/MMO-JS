@@ -6,7 +6,7 @@ export default class Floor extends Mesh {
   
   constructor() {
     super(
-      new BoxGeometry(45, 1, 45),
+      new BoxGeometry(25, 1, 25),
       new MeshStandardMaterial({ color: 0x717171 })
     );
 

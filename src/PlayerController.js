@@ -199,8 +199,8 @@ export default class PlayerController extends PropDynamic {
   updateCursor(event) {
     let intersects = Process.camera.intersect(event);
 
-    let interactable = intersects.find((o) => o.object.isInteractable);
     let target = intersects.find((o) => o.object.isFloorable);
+    let interactable = intersects.find((o) => o.object.isInteractable);
 
     if (interactable) {
       target = interactable;

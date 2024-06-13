@@ -3,8 +3,8 @@ import Process from "./classes/Process";
 
 export default class PlayerCamera extends THREE.PerspectiveCamera {
   static fov = 75;
-  static near = 0.1;
-  static far = 2000;
+  static near = 1;
+  static far = 3000;
   static maxZoom = 7;
   static minZoom = 3;
 
