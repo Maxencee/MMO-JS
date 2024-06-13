@@ -23,10 +23,10 @@ export default class PlayerCamera extends THREE.PerspectiveCamera {
   zoomTo(dir) {
     if((dir == 1 && this.position.y < PlayerCamera.minZoom) || (dir == -1 && this.position.y > PlayerCamera.maxZoom)) return;
     this.updatePosition(
-      new THREE.Vector3(0.2 * dir, 0, 0.2 * dir),
+      new THREE.Vector3(0.3 * dir, 0, 0.3 * dir),
       new THREE.Vector3(0.1 * dir, 0, 0.1 * dir)
     );
-    this.position.y += 0.15 * -dir;
+    this.position.y += 0.35 * -dir;
   }
 
   updatePosition(position, playerPosition) {
