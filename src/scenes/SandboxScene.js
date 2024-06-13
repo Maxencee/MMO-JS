@@ -1,10 +1,8 @@
 import Scene from "../classes/Scene";
 import PlayerController from "../PlayerController";
-import LightEnvironment from "../classes/LightEnvironment";
-import BoundingBox from "../entities/BoundingBox";
-import Floor from "../entities/Floor";
+import LightEnvironment from "../entities/LightEnvironment";
+import Floor from "../props/Floor";
 
-import PropDynamic from "../entities/PropDynamic";
 import { LoopOnce, Vector3 } from "three";
 import BoundingBoxInteractable from "../entities/BoundingBoxInteractable";
 import PropStatic from "../entities/PropStatic";

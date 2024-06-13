@@ -1,5 +1,4 @@
-import { AmbientLight, CameraHelper, DirectionalLight, Vector3 } from "three"
-import Process from "./Process";
+import { AmbientLight, CameraHelper, DirectionalLight, Vector3 } from "three";
 
 export default class LightEnvironment extends DirectionalLight {
     constructor (color, intensity) {
