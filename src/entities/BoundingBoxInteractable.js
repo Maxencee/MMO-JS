@@ -15,7 +15,7 @@ export default class BoundingBoxInteractable extends BoundingBox {
   interactableOver () {
     let outlineMaterial = new MeshStandardMaterial({ color: 0xffffff, side: FrontSide, transparent: true, opacity: 0.5, emissive: 0xffffff, emissiveIntensity: 5.0 });
     this.outline = new Mesh(this.geometry, outlineMaterial);
-    this.outline.scale.multiplyScalar(1.02);
+    this.outline.scale.multiplyScalar(1.015);
     this.add(this.outline);
   }
 

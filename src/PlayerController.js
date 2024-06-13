@@ -127,7 +127,17 @@ export default class PlayerController extends PropDynamic {
   actionRightClick (event) {
     if (event.button !== 2) return;
 
-    if (this.interactableTarget) return this.interactableTarget.interact(this);
+    if (this.interactableTarget) {
+      this.interactableTarget.interact(this);
+      this.interactableTarget.interactableLeaveRange();
+      this.interactableTarget = null;
+
+      this.pointer.geometry = this.pointer.base;
+      this.line.material.color = new Color(0xffffff);
+      this.pointer.material.color = new Color(0xffffff);
+      return;
+    }
+
     if (!this.canMove) return;
 
     let start = this.position.clone();
@@ -168,6 +178,8 @@ export default class PlayerController extends PropDynamic {
         if (collide && collide.distance < dirLength/2) {
           this.material.color = new Color(0xf9ff47);
           this.tween.stop();
+          this.target.visible = false;
+          this.playAction("idle");
         } else {
           Process.camera.updatePosition(position, this.position);
           this.material.color = new Color(0x4287f5);
@@ -179,10 +191,6 @@ export default class PlayerController extends PropDynamic {
         this.updateLine();
       })
       .onComplete(() => {
-        this.target.visible = false;
-        this.playAction("idle");
-      })
-      .onStop(() => {
         this.target.visible = false;
         this.playAction("idle");
       })
