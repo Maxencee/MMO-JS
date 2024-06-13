@@ -33,7 +33,6 @@ export default class SandboxScene extends Scene {
       
         const chest = new PropInteractable("assets/models/chest/source/Chest.fbx", {
           texture: 'assets/models/chest/textures/Chest_D.png',
-          bounding: 0xffffff,
           scale: new Vector3(0.008, 0.008, 0.008),
           position: new Vector3(0, 0, 0),
           shadow: PropStatic.RECEIVE_SHADOW,

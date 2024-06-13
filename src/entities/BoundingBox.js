@@ -4,8 +4,13 @@ export default class BoundingBox extends Mesh {
   constructor(width, height, depth, color) {
     super(
       new BoxGeometry(width, height, depth),
-      new MeshStandardMaterial({ color: color, wireframe: true, transparent: true, opacity: color === null ? 0 : 1 })
+      new MeshStandardMaterial({ color: color, wireframe: true })
     );
+
+    if(!color) {
+      this.material.transparent = true;
+      this.material.opacity = 0;
+    }
 
     this.position.set(0, height/2, 0);
   }

@@ -11,11 +11,11 @@ export default class Floor extends Mesh {
     );
 
     const axesHelper = new AxesHelper(5);
-    axesHelper.position.y = 0.51;
+    axesHelper.position.y = 0.502;
     this.add(axesHelper);
 
     const gridHelper = new GridHelper(25, 25, 0x333333);
-    gridHelper.position.y = 0.509;
+    gridHelper.position.y = 0.501;
     this.add(gridHelper);
 
     this.position.set(0, -0.5, 0);

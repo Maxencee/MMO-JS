@@ -3,11 +3,8 @@ import {
   BufferGeometry,
   CircleGeometry,
   Color,
-  Line,
-  LineBasicMaterial,
   Mesh,
   MeshBasicMaterial,
-  Raycaster,
   RingGeometry,
   Vector3,
 } from "three";
@@ -15,8 +12,7 @@ import {
 import TWEEN from "@tweenjs/tween.js";
 import PropDynamic from "./entities/PropDynamic";
 import Process from "./classes/Process";
-import { uniform } from "three/examples/jsm/nodes/Nodes.js";
-
+import { MeshLine, MeshLineMaterial, MeshLineRaycast } from "three.meshline";
 export default class PlayerController extends PropDynamic {
   pointer;
   target;
@@ -87,15 +83,20 @@ export default class PlayerController extends PropDynamic {
     this.pointer.position.copy(flatPosition);
 
     const points = [flatPosition, this.pointer.position];
-    const geometry = new BufferGeometry().setFromPoints(points);
-    const lineMaterial = new LineBasicMaterial({
+    const lineMaterial = new MeshLineMaterial({
       color: 0xffffff,
-      linewidth: 3,
+      lineWidth: 0.1,
+      sizeAttenuation: true
     });
     lineMaterial.polygonOffset = true;
     lineMaterial.polygonOffsetFactor = -0.2;
 
-    this.line = new Line(geometry);
+    const geometry = new BufferGeometry().setFromPoints(points);
+    const line = new MeshLine();
+    line.setGeometry(geometry);
+    // line.setPoints(points);
+    this.line = new Mesh(line, lineMaterial);
+    this.line.raycast = MeshLineRaycast;
 
     const targetM = new MeshBasicMaterial({ color: 0xffffff });
     targetM.polygonOffset = true;
@@ -181,7 +182,18 @@ export default class PlayerController extends PropDynamic {
     let start = this.position.clone();
     let target = this.pointer.position.clone();
     start.y = target.y;
-    this.line.geometry.setFromPoints([start, target]);
+
+    const direction = new Vector3().subVectors(target, start).normalize();
+    const params = this.pointer.geometry.parameters;
+
+    const edgePoint = new Vector3(
+      target.x + ((params.outerRadius || 0.25) - 0.01) * (-direction.x), 
+      target.y,
+      target.z + ((params.outerRadius || 0.25) - 0.01) * (-direction.z)
+    );
+
+    const geometry = new BufferGeometry().setFromPoints([start, edgePoint]);
+    this.line.geometry.setGeometry(geometry);
   }
 
   updateCursor(event) {
