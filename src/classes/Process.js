@@ -3,8 +3,6 @@ import TWEEN from "@tweenjs/tween.js";
 
 export default class Process {
     renderer;
-    clock;
-
     renderID;
 
     static scene;
@@ -23,9 +21,6 @@ export default class Process {
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         document.body.appendChild(this.renderer.domElement);
-
-        this.clock = new THREE.Clock(true);
-        this.clock.start();
         
         Process.scene = scene;
         Process.camera = camera;
@@ -51,6 +46,10 @@ export default class Process {
         }
     }
 
+    static changeScene (scene) {
+        Process.scene = scene;
+    }
+
     render () {
         if(!Process.scene || !Process.camera) {
             cancelAnimationFrame(this.renderID);
@@ -58,7 +57,7 @@ export default class Process {
         }
 
         TWEEN.update();
-        Process.queue.filter(callback => callback(this.clock) !== false);
+        Process.queue.filter(callback => callback() !== false);
 
         this.renderer.render(Process.scene, Process.camera);
         this.renderID = requestAnimationFrame(() => this.render());
