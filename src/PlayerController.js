@@ -104,7 +104,6 @@ export default class PlayerController extends PropDynamic {
     const geometry = new BufferGeometry().setFromPoints(points);
     const line = new MeshLine();
     line.setGeometry(geometry);
-    // line.setPoints(points);
     this.line = new Mesh(line, lineMaterial);
     this.line.raycast = MeshLineRaycast;
 
@@ -115,7 +114,7 @@ export default class PlayerController extends PropDynamic {
     targetM.opacity = 0.65;
 
     this.target = new Mesh(new CircleGeometry(0.35), targetM);
-    // this.target.add(new Mesh(new RingGeometry(0.45, 0.5), targetM));
+    this.target.add(new Mesh(new RingGeometry(0.45, 0.5), targetM));
 
     this.target.rotateX(-Math.PI / 2);
     this.target.visible = false;
