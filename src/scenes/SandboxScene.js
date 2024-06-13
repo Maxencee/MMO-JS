@@ -55,7 +55,7 @@ export default class SandboxScene extends Scene {
         console.log(chest);
       
         chest.position.x = 4;
-        chest.position.z = -4;
+        chest.position.z = -2;
         this.add(chest);
       
         const jumpWall = new BoundingBoxInteractable(3, 0.5, 1, 0xff9d4d);

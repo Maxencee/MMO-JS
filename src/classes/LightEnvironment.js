@@ -1,4 +1,4 @@
-import { AmbientLight, DirectionalLight, Vector3 } from "three"
+import { AmbientLight, CameraHelper, DirectionalLight, Vector3 } from "three"
 import Process from "./Process";
 
 export default class LightEnvironment extends DirectionalLight {
@@ -9,10 +9,17 @@ export default class LightEnvironment extends DirectionalLight {
         this.target.position.set(0, 0, 0);
         this.castShadow = true;
 
-        this.shadow.mapSize.width = 100;
-        this.shadow.mapSize.height = 100;
+        this.shadow.mapSize.width = 512;
+        this.shadow.mapSize.height = 512;
         this.shadow.camera.near = 0.2;
-        this.shadow.camera.far = 2000;
+        this.shadow.camera.far = 100;
+        this.shadow.camera.top = 32;
+        this.shadow.camera.bottom = -32;
+        this.shadow.camera.left = -32;
+        this.shadow.camera.right = 32;
+
+        const helper = new CameraHelper(this.shadow.camera);
+        this.add(helper);
 
         const ambientLight = new AmbientLight(color);
         ambientLight.intensity = intensity - 0.65;
