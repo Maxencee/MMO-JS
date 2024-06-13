@@ -70,7 +70,9 @@ export default class PropInteractable extends BoundingBoxInteractable {
     dir.subVectors(dirEnd, dirStart).normalize();
 
     let ray = new THREE.Raycaster(rayOrigin.clone(), dir.clone().normalize());
-    let collisions = ray.intersectObjects(Process.getSceneObjects(), true);
+
+    let objects = Process.getSceneObjects();
+    let collisions = ray.intersectObjects(objects, true);
 
     return [collisions, dir.length()];
   }

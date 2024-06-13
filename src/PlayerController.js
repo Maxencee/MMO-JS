@@ -168,8 +168,6 @@ export default class PlayerController extends PropDynamic {
         if (collide && collide.distance < dirLength/2) {
           this.material.color = new Color(0xf9ff47);
           this.tween.stop();
-          this.target.visible = false;
-          this.playAction("idle");
         } else {
           Process.camera.updatePosition(position, this.position);
           this.material.color = new Color(0x4287f5);
@@ -181,6 +179,10 @@ export default class PlayerController extends PropDynamic {
         this.updateLine();
       })
       .onComplete(() => {
+        this.target.visible = false;
+        this.playAction("idle");
+      })
+      .onStop(() => {
         this.target.visible = false;
         this.playAction("idle");
       })

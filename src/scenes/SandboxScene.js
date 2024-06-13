@@ -8,6 +8,7 @@ import BoundingBoxInteractable from "../entities/BoundingBoxInteractable";
 import PropStatic from "../entities/PropStatic";
 import PropInteractable from "../entities/PropInteractable";
 import Process from "../classes/Process";
+import BoxPushable from "../props/BoxPushable";
 
 export default class SandboxScene extends Scene {
     constructor (backgroundColor) {
@@ -61,6 +62,8 @@ export default class SandboxScene extends Scene {
         jumpWall.position.x = -4;
         jumpWall.position.z = -4;
         this.add(jumpWall);
+
+        this.add(new BoxPushable());
       
         const player = new PlayerController();
       
