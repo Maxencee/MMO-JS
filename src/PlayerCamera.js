@@ -1,9 +1,12 @@
 import * as THREE from "three";
+import Process from "./classes/Process";
 
 export default class PlayerCamera extends THREE.PerspectiveCamera {
   static fov = 75;
   static near = 0.1;
   static far = 2000;
+  static maxZoom = 7;
+  static minZoom = 3;
 
   constructor() {
     super(
@@ -13,16 +16,37 @@ export default class PlayerCamera extends THREE.PerspectiveCamera {
       PlayerCamera.far
     );
 
-    this.lookAt(new THREE.Vector3(0, 0, 0));
+    this.position.set(0, -1, 0);
+    this.lookAt(new THREE.Vector3(0, -2, 0));
   }
 
-  intersect(event, group) {
+  zoomTo(dir) {
+    if((dir == 1 && this.position.y < PlayerCamera.minZoom) || (dir == -1 && this.position.y > PlayerCamera.maxZoom)) return;
+    this.updatePosition(
+      new THREE.Vector3(0.2 * dir, 0, 0.2 * dir),
+      new THREE.Vector3(0.1 * dir, 0, 0.1 * dir)
+    );
+    this.position.y += 0.15 * -dir;
+  }
+
+  updatePosition(position, playerPosition) {
+    this.position.add(
+      new THREE.Vector3(
+        position.x - playerPosition.x,
+        0,
+        position.z - playerPosition.z
+      )
+    );
+    this.updateMatrixWorld();
+  }
+
+  intersect(event) {
     let mouse = new THREE.Vector2();
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     let raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, this);
-    return raycaster.intersectObjects(group, true);
+    return raycaster.intersectObjects(Process.getSceneObjects(), true);
   }
 }
