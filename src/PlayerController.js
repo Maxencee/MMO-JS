@@ -12,6 +12,7 @@ import {
 import TWEEN from "@tweenjs/tween.js";
 import PropDynamic from "./entities/PropDynamic";
 import Process from "./classes/Process";
+import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
 import { MeshLine, MeshLineMaterial, MeshLineRaycast } from "three.meshline";
 export default class PlayerController extends PropDynamic {
   pointer;
@@ -21,6 +22,7 @@ export default class PlayerController extends PropDynamic {
   speed = 200;
   isCollidable = false;
   canMove = true;
+  label;
 
   constructor() {
     super("assets/models/player.fbx", {
@@ -50,6 +52,14 @@ export default class PlayerController extends PropDynamic {
     };
 
     this.playAction("idle");
+
+    let label = document.createElement("span");
+    label.textContent = "Joueur";
+    label.className = "player-name"
+    this.label = new CSS2DObject(label);
+    this.label.position.set(0, this.size.y, 0);
+    this.label.center.set(0.48, 0);
+    this.add(this.label);
   }
 
   playAction(action) {

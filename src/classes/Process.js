@@ -1,8 +1,10 @@
 import * as THREE from "three";
 import TWEEN from "@tweenjs/tween.js";
+import { CSS2DRenderer } from "three/examples/jsm/Addons.js";
 
 export default class Process {
     renderer;
+    renderer2D;
     renderID;
 
     static scene;
@@ -21,6 +23,11 @@ export default class Process {
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         document.body.appendChild(this.renderer.domElement);
+
+        this.renderer2D = new CSS2DRenderer();
+        this.renderer2D.setSize(window.innerWidth, window.innerHeight);
+        this.renderer2D.domElement.classList.add('renderer2D');
+        document.body.appendChild(this.renderer2D.domElement);
         
         Process.scene = scene;
         Process.camera = camera;
@@ -46,7 +53,7 @@ export default class Process {
         }
     }
 
-    static changeScene (scene) {
+    static switchScene (scene) {
         Process.scene = scene;
     }
 
@@ -60,6 +67,7 @@ export default class Process {
         Process.queue.filter(callback => callback() !== false);
 
         this.renderer.render(Process.scene, Process.camera);
+        this.renderer2D.render(Process.scene, Process.camera);
         this.renderID = requestAnimationFrame(() => this.render());
     }
 }
