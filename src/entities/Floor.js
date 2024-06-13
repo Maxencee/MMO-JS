@@ -1,6 +1,9 @@
 import { AxesHelper, BoxGeometry, GridHelper, Mesh, MeshStandardMaterial } from "three";
 
 export default class Floor extends Mesh {
+  isFloorable = true;
+  receiveShadow = true;
+  
   constructor() {
     super(
       new BoxGeometry(45, 1, 45),
@@ -17,7 +20,4 @@ export default class Floor extends Mesh {
 
     this.position.set(0, -0.5, 0);
   }
-
-  isFloorable = true;
-  receiveShadow = true;
 }
