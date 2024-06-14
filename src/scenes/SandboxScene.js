@@ -63,7 +63,13 @@ export default class SandboxScene extends Scene {
         jumpWall.position.z = -4;
         this.add(jumpWall);
 
-        this.add(new BoxPushable());
+        const pushableBox = new BoxPushable();
+        pushableBox.position.set(-3, 0, 4);
+        this.add(pushableBox);
+
+        const pushableBox2 = new BoxPushable();
+        pushableBox2.position.set(7, 0, -3);
+        this.add(pushableBox2);
       
         const player = new PlayerController();
       
