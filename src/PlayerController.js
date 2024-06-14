@@ -26,8 +26,8 @@ export default class PlayerController extends PropDynamic {
 
   constructor() {
     super("assets/models/player.fbx", {
-      position: new Vector3(0, -0.7, 0),
-      scale: new Vector3(0.008, 0.008, 0.008),
+      position: new Vector3(0, -0.45, 0),
+      scale: new Vector3(0.012, 0.012, 0.012),
       // material: new MeshBasicMaterial({ color: 0xffcaa8 }),
       shadow: PropDynamic.CAST_SHADOW,
     });
@@ -45,6 +45,7 @@ export default class PlayerController extends PropDynamic {
       idle: this.mixer.clipAction(this.mixer.getAction("Armature|Idle")),
       walk: this.mixer.clipAction(this.mixer.getAction("Armature|Walking")),
       jump: this.mixer.clipAction(this.mixer.getAction("Armature|Jump")),
+      push: this.mixer.clipAction(this.mixer.getAction("Armature|Push")),
       dance: this.mixer.clipAction(
         this.mixer.getAction("Armature|Chicken Dance")
       ),
@@ -57,16 +58,9 @@ export default class PlayerController extends PropDynamic {
     label.textContent = "Joueur";
     label.className = "player-name"
     this.label = new CSS2DObject(label);
-    this.label.position.set(0, this.size.y, 0);
+    this.label.position.set(0, this.size.y + this.position.y/2, 0);
     this.label.center.set(0.48, 0);
     this.add(this.label);
-  }
-
-  playAction(action) {
-    if (!this.animations[action])
-      return console.error("Action '%s' don't exist on this prop", action);
-    this.mixer.stopAllAction();
-    this.animations[action].play();
   }
 
   mountCamera() {
@@ -135,34 +129,43 @@ export default class PlayerController extends PropDynamic {
       this.pointer.geometry = this.pointer.base;
       this.line.material.color = new Color(0xffffff);
       this.pointer.material.color = new Color(0xffffff);
+      this.updateLine();
       return;
     }
-
+    
     if (!this.canMove) return;
-
-    let start = this.position.clone();
     let target = this.pointer.position.clone();
+    let start = this.position.clone();
     start.y = target.y = 0;
 
-    // This line is super important, without it the player cast collision at 0y of itself causing non-collisions of small objects
+    if (start.equals(target)) return;
+
+    this.target.position.copy(this.pointer.position);
+    this.target.visible = true;
+
+    this.moveTo(target);
+  }
+  
+  moveTo (target, animation = 'walk') {
+    if (this.tween) this.tween.stop();
+    if (!this.animations[animation] || !this.animations[animation].isRunning()) this.playAction(animation);
+
+    // this is super important, the player was casting collision at 0y of itself causing non-collisions of small objects
     // took me a while to figure btw
+    // target is the raycast target while vtarget is the position target for the player
+
+
     let vtarget = new Vector3(
       target.x,
       this.position.y,
       target.z,
     );
 
-    if (start.equals(target)) return;
-    if (this.tween) this.tween.stop();
-    if (!this.animations.walk.isRunning()) this.playAction("walk");
-
-    this.target.position.copy(this.pointer.position);
-    this.target.visible = true;
-
     this.lookAt(vtarget);
+    let start = this.position.clone();
+    start.y = 0;
 
     let distance = start.distanceTo(target);
-
     this.tween = new TWEEN.Tween(start)
       .delay(0)
       .to(vtarget, (distance * 1000) / (this.speed / 100))
@@ -195,6 +198,8 @@ export default class PlayerController extends PropDynamic {
         this.playAction("idle");
       })
       .start();
+
+      return this.tween;
   }
 
   updateLine() {

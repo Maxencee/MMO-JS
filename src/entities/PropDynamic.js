@@ -42,8 +42,8 @@ export default class PropDynamic extends BoundingBox {
       });
 
       if (options.position) mesh.position.copy(options.position);
-      if (options.scale) mesh.scale.copy(options.scale);
       if (options.rotation) mesh.rotation.copy(options.rotation);
+      if (options.scale) mesh.scale.copy(options.scale);
 
       this.clock = new THREE.Clock(true);
       this.clock.start();
@@ -64,6 +64,13 @@ export default class PropDynamic extends BoundingBox {
   }
 
   onModelLoaded() {}
+
+  playAction(action) {
+    if (!this.animations || !this.animations[action])
+      return console.error("Action '%s' don't exist on this prop", action);
+    this.mixer.stopAllAction();
+    this.animations[action].play();
+  }
 
   getCollisions(rayOrigin, [dirStart, dirEnd]) {
     let dir = new THREE.Vector3();

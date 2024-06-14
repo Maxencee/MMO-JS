@@ -16,8 +16,8 @@ export default class PlayerCamera extends THREE.PerspectiveCamera {
       PlayerCamera.far
     );
 
-    this.position.set(0, -1, 0);
-    this.lookAt(new THREE.Vector3(0, -2, 0));
+    this.position.set(0, 100, 0);
+    this.lookAt(new THREE.Vector3(0, 100, 0));
   }
 
   zoomTo(dir) {
