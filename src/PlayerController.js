@@ -153,8 +153,6 @@ export default class PlayerController extends PropDynamic {
     // this is super important, the player was casting collision at 0y of itself causing non-collisions of small objects
     // took me a while to figure btw
     // target is the raycast target while vtarget is the position target for the player
-
-
     let vtarget = new Vector3(
       target.x,
       this.position.y,
@@ -242,6 +240,8 @@ export default class PlayerController extends PropDynamic {
 
       let collide = collisions.find((o) => o.object.isCollidable);
 
+      let distance = this.position.distanceTo(this.pointer.position);
+
       if (
         collide &&
         collide.object.isInteractable &&
@@ -274,7 +274,7 @@ export default class PlayerController extends PropDynamic {
           this.pointer.material.color = new Color(0xffffff);
           this.canMove = true;
         }
-      } else if (collide) {
+      } else if (collide && collide.distance < distance) {
         this.pointer.geometry = this.pointer.base;
         this.line.material.color = new Color(0xff2e2e);
         this.pointer.material.color = new Color(0xff2e2e);
