@@ -265,6 +265,7 @@ export default class PlayerController extends PropDynamic {
             !this.interactableTarget ||
             this.interactableTarget.id !== target.object.id
           ) {
+            this.interactableTarget?.interactableLeaveRange();
             this.interactableTarget = target.object;
             this.interactableTarget.interactableOver();
             return;

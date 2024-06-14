@@ -6,8 +6,8 @@ export default class BoxPushable extends PropInteractable {
   constructor() {
     super("assets/models/crates/crate.gltf", {
       // bounding: 0xffffff,
-      scale: new THREE.Vector3(1.5, 1.5, 1.5),
-      position: new THREE.Vector3(0, -0.4, 0),
+      scale: new THREE.Vector3(2, 2, 2),
+      position: new THREE.Vector3(0, -0.52, 0),
       shadow: PropInteractable.RECEIVE_SHADOW,
     });
   }

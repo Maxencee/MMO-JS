@@ -70,6 +70,10 @@ export default class SandboxScene extends Scene {
         const pushableBox2 = new BoxPushable();
         pushableBox2.position.set(7, 0, -3);
         this.add(pushableBox2);
+
+        const pushableBox3 = new BoxPushable();
+        pushableBox3.position.set(-4, 0, 6);
+        this.add(pushableBox3);
       
         const player = new PlayerController();
       
