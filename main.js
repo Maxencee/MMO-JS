@@ -9,6 +9,8 @@ import SandboxScene from "./src/scenes/SandboxScene";
     if(Process.camera) Process.camera.zoomTo(-Math.sign(evt.deltaY));
   });
 
+  Process.showStats();
+
   new Process({
     scene: new SandboxScene(0x1b1b1b),
     camera: new PlayerCamera(),
