@@ -11,7 +11,9 @@ export default class PropInteractable extends BoundingBoxInteractable {
   model;
   clock;
 
-  constructor(model, options = null) {
+  currentAnimation;
+
+  constructor(path, options = null) {
     super(1, 1, 1, options.bounding);
 
     let material;
@@ -27,12 +29,11 @@ export default class PropInteractable extends BoundingBoxInteractable {
       material = options.material;
     }
 
-    let mesh;
-    const isFBX = model.endsWith(".fbx");
+    const isFBX = path.endsWith(".fbx");
     const loader = isFBX ? new FBXLoader() : new GLTFLoader();
-    loader.load(model, (model) => {
-      mesh = isFBX ? model : model.scene;
-      mesh.traverse((node) => {
+    loader.load(path, (model) => {
+      this.model = isFBX ? model : model.scene;
+      this.model.traverse((node) => {
         if (node.isMesh) {
           if (material) node.material = material;
           if (options.shadow >= PropInteractable.CAST_SHADOW) node.castShadow = true;
@@ -40,23 +41,26 @@ export default class PropInteractable extends BoundingBoxInteractable {
             node.receiveShadow = true;
         }
       });
-
-      if (options.position) mesh.position.copy(options.position);
-      if (options.scale) mesh.scale.copy(options.scale);
-      if (options.rotation) mesh.rotation.copy(options.rotation);
+      
+      if (options.position) this.model.position.copy(options.position);
+      if (options.rotation) this.model.rotation.copy(options.rotation);
+      if (options.scale) this.model.scale.copy(options.scale);
 
       this.clock = new THREE.Clock(true);
       this.clock.start();
-      this.mixer = new THREE.AnimationMixer(mesh);
+      this.mixer = new THREE.AnimationMixer(this.model);
       this.mixer.getAction = (name) =>
-        THREE.AnimationClip.findByName(mesh.animations, name);
+        THREE.AnimationClip.findByName(this.model.animations, name);
 
-      this.model = mesh;
-      this.add(mesh);
-
-      this.bounding = new THREE.Box3().setFromObject(mesh);
-      this.size = this.bounding.getSize(new THREE.Vector3());
+      this.model.name = path.match(/\/?(\w+)\.\w+/)[1] || "model";
+      this.add(this.model);
+      
+      this.bounding = new THREE.Box3().setFromObject(this.model, true);
+      this.size = options.boundings || this.bounding.getSize(new THREE.Vector3());
       this.position.y = this.size.y / 2;
+      
+      if (!options.position) this.model.position.y = -this.size.y / 2;
+      
       this.geometry.scale(this.size.x, this.size.y, this.size.z);
 
       this.onModelLoaded();
@@ -65,13 +69,22 @@ export default class PropInteractable extends BoundingBoxInteractable {
 
   onModelLoaded() {}
 
+  playAction(action) {
+    if (!this.animations || !this.animations[action])
+      return console.error("Action '%s' don't exist on this prop", action);
+
+    if(this.currentAnimation) this.animations[action].reset().crossFadeFrom(this.currentAnimation.reset(), 0.2).play();
+    this.currentAnimation = this.animations[action];
+  }
+
   getCollisions(rayOrigin, [dirStart, dirEnd]) {
     let dir = new THREE.Vector3();
     dir.subVectors(dirEnd, dirStart).normalize();
 
     let ray = new THREE.Raycaster(rayOrigin.clone(), dir.clone().normalize());
-
+    
     let objects = Process.getSceneObjects();
+    objects = objects.filter(o => o.id !== this.id);
     let collisions = ray.intersectObjects(objects, true);
 
     return [collisions, dir.length()];
