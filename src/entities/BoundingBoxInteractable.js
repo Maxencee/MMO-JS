@@ -1,4 +1,4 @@
-import { FrontSide, Mesh, MeshStandardMaterial } from "three";
+import { BoxGeometry, FrontSide, Mesh, MeshStandardMaterial } from "three";
 import BoundingBox from "./BoundingBox";
 
 export default class BoundingBoxInteractable extends BoundingBox {
@@ -24,7 +24,8 @@ export default class BoundingBoxInteractable extends BoundingBox {
   }
 
   interact (interactor) {
-    if(interactor.animations.walk.isRunning()) return;
-    interactor.playAction.call(interactor, 'dance');
+    if(interactor.isMoving() || interactor.animations.dance.isRunning()) return;
+
+    interactor.playAction('dance');
   }
 }

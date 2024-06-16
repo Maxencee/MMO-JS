@@ -1,25 +1,53 @@
-import { Box3, BoxGeometry, Mesh, MeshStandardMaterial, Vector3 } from "three";
+import {
+  Box3,
+  BoxGeometry,
+  Color,
+  Mesh,
+  MeshStandardMaterial,
+  Vector3,
+} from "three";
 
 export default class BoundingBox extends Mesh {
   constructor(width, height, depth, color) {
-    super(
-      new BoxGeometry(width, height, depth),
-      new MeshStandardMaterial({ color: color, wireframe: true })
-    );
+    let material = BoundingBox.material.clone();
+    material.color = new Color(color);
 
-    if(!color) {
-      this.material.transparent = true;
-      this.material.opacity = 0;
+    super(new BoxGeometry(width, height, depth), material);
+
+    this.position.set(0, height / 2, 0);
+  }
+
+  static material = new MeshStandardMaterial({
+    color: 0xffffff,
+    transparent: true,
+    opacity: 0,
+    depthWrite: false,
+  });
+
+  static setMode(mode) {
+    if (mode == "solid") {
+      BoundingBox.material.transparent = false;
+      BoundingBox.material.opacity = 1;
     }
 
-    this.position.set(0, height/2, 0);
+    if (mode === "wireframe") {
+      BoundingBox.material.transparent = false;
+      BoundingBox.material.opacity = 1;
+      BoundingBox.material.wireframe = true;
+    }
+
+    if (mode === "semi-solid") {
+      BoundingBox.material.transparent = true;
+      BoundingBox.material.opacity = 0.65;
+      BoundingBox.material.wireframe = false;
+    }
   }
 
   receiveShadow = false;
   castShadow = false;
   isCollidable = true;
 
-  getBounding () {
+  getBounding() {
     let box = new Box3().setFromObject(this);
     return box.getSize(new Vector3());
   }
