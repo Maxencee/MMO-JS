@@ -1,0 +1,306 @@
+{
+  "accessors": [
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 576,
+      "max": [
+        1.9739400148391724,
+        1.9088000059127808,
+        2.08489990234375
+      ],
+      "min": [
+        -1.9739400148391724,
+        -2.0683999061584473,
+        0.19781999289989471
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 6912,
+      "componentType": 5126,
+      "count": 576,
+      "max": [
+        0.9882879853248596,
+        0.9989190697669983,
+        0.999996542930603
+      ],
+      "min": [
+        -0.9882879853248596,
+        -0.9967835545539856,
+        -0.9989812970161438
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 840,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 13824,
+      "componentType": 5126,
+      "count": 96,
+      "max": [
+        1.0432599782943726,
+        0.9347100257873535,
+        0.913640022277832
+      ],
+      "min": [
+        -1.0432599782943726,
+        -1.030769944190979,
+        0.49726998805999756
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 14976,
+      "componentType": 5126,
+      "count": 96,
+      "max": [
+        0.9848703742027283,
+        0.958831250667572,
+        0.9961233139038086
+      ],
+      "min": [
+        -0.9848703742027283,
+        -0.9422900080680847,
+        0.0360100120306015
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 3360,
+      "componentType": 5125,
+      "count": 144,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "GGklin (https://sketchfab.com/GGklin)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/low-poly-hat-60b347d669fb4d0fb9799480f6638b38",
+      "title": "Low Poly Hat"
+    },
+    "generator": "Sketchfab-12.66.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 3936,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 16128,
+      "byteOffset": 3936,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 20064,
+      "uri": "scene.bin"
+    }
+  ],
+  "extensionsRequired": [
+    "KHR_materials_pbrSpecularGlossiness"
+  ],
+  "extensionsUsed": [
+    "KHR_materials_pbrSpecularGlossiness"
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_pbrSpecularGlossiness": {
+          "diffuseFactor": [
+            0.2581828529215958,
+            0.15592646370782737,
+            0.07618538148130782,
+            1.0
+          ],
+          "glossinessFactor": 1.0,
+          "specularFactor": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "name": "Material"
+    },
+    {
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_pbrSpecularGlossiness": {
+          "diffuseFactor": [
+            0.15592646370782737,
+            0.09305896284668747,
+            0.05780543019106723,
+            1.0
+          ],
+          "glossinessFactor": 1.0,
+          "specularFactor": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "name": "Material.001"
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Cube_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0
+          },
+          "indices": 2,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Cube_1",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 4,
+            "POSITION": 3
+          },
+          "indices": 5,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2,
+        4,
+        6
+      ],
+      "name": "Root"
+    },
+    {
+      "children": [
+        3
+      ],
+      "matrix": [
+        0.06163000000000002,
+        -0.003270000000000001,
+        -0.99809,
+        0.0,
+        0.29141000000000006,
+        0.95648,
+        0.014870000000000003,
+        0.0,
+        0.9546100000000001,
+        -0.29177000000000003,
+        0.05990000000000001,
+        0.0,
+        5.8951199999999995,
+        -2.3332399999999995,
+        1.78099,
+        1.0
+      ],
+      "name": "Secundaria"
+    },
+    {
+      "name": "Secundaria"
+    },
+    {
+      "children": [
+        5
+      ],
+      "matrix": [
+        -0.17734000000000003,
+        -0.24811000000000002,
+        -0.95236,
+        0.0,
+        0.61416,
+        -0.7840400000000001,
+        0.08990000000000002,
+        0.0,
+        -0.7690000000000001,
+        -0.56896,
+        0.29143,
+        0.0,
+        -5.68842,
+        -4.9749799999999995,
+        3.8871300000000004,
+        1.0
+      ],
+      "name": "Principal"
+    },
+    {
+      "name": "Principal"
+    },
+    {
+      "children": [
+        7,
+        8
+      ],
+      "name": "Cube"
+    },
+    {
+      "mesh": 0,
+      "name": "Cube_0"
+    },
+    {
+      "mesh": 1,
+      "name": "Cube_1"
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}
