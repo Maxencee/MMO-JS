@@ -4,7 +4,7 @@ export default class LightEnvironment extends DirectionalLight {
     constructor (color, intensity) {
         super(color, intensity);
 
-        this.position.set(6, 18, 2);
+        this.position.set(12, 18, 4);
         this.target.position.set(0, 0, 0);
         this.castShadow = true;
 
