@@ -1,9 +1,8 @@
-import PlayerController from "../PlayerController";
+import PlayerController from "../props/PlayerController";
 import Scene from "../classes/Scene";
 import LightEnvironment from "../entities/LightEnvironment";
 import Floor from "../props/Floor";
 import BoxPushable from "../props/BoxPushable";
-import BoundingBoxInteractable from "../entities/BoundingBoxInteractable";
 import BoundingBox from "../entities/BoundingBox";
 
 export default class SandboxScene extends Scene {

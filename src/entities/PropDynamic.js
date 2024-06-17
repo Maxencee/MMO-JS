@@ -11,6 +11,7 @@ export default class PropDynamic extends BoundingBox {
   model;
   clock;
 
+  animations;
   currentAnimation;
 
   constructor(path, options = null) {
@@ -54,7 +55,7 @@ export default class PropDynamic extends BoundingBox {
 
       this.model.name = path.match(/\/?(\w+)\.\w+/)[1] || "model";
       this.add(this.model);
-      
+
       this.bounding = new THREE.Box3().setFromObject(this.model, true);
       this.size = options.boundings || this.bounding.getSize(new THREE.Vector3());
       this.position.y = this.size.y / 2;

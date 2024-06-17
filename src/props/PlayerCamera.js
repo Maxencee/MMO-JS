@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import Process from "./classes/Process";
+import Process from "../classes/Process";
 
 export default class PlayerCamera extends THREE.PerspectiveCamera {
   static fov = 75;
@@ -18,9 +18,14 @@ export default class PlayerCamera extends THREE.PerspectiveCamera {
 
     this.position.set(0, 100, 0);
     this.lookAt(new THREE.Vector3(0, 100, 0));
+
+    let zoomfunction = this.zoomTo.bind(this);
+    this.addEventListener('removed', () => document.removeEventListener("wheel", zoomfunction));
+    document.addEventListener("wheel", zoomfunction);
   }
 
-  zoomTo(dir) {
+  zoomTo (evt) {
+    let dir = -Math.sign(evt.deltaY);
     if((dir == 1 && this.position.y < PlayerCamera.minZoom) || (dir == -1 && this.position.y > PlayerCamera.maxZoom)) return;
     this.updatePosition(
       new THREE.Vector3(0.3 * dir, 0, 0.3 * dir),
@@ -29,12 +34,12 @@ export default class PlayerCamera extends THREE.PerspectiveCamera {
     this.position.y += 0.35 * -dir;
   }
 
-  updatePosition(position, playerPosition) {
+  updatePosition(position, lookPosition) {
     this.position.add(
       new THREE.Vector3(
-        position.x - playerPosition.x,
+        position.x - lookPosition.x,
         0,
-        position.z - playerPosition.z
+        position.z - lookPosition.z
       )
     );
     this.updateMatrixWorld();

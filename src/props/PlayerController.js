@@ -16,15 +16,15 @@ import {
 } from "three";
 
 import TWEEN from "@tweenjs/tween.js";
-import PropDynamic from "./entities/PropDynamic";
-import Process from "./classes/Process";
+import PropDynamic from "../entities/PropDynamic";
+import Process from "../classes/Process";
 import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
 import { MeshLine, MeshLineMaterial, MeshLineRaycast } from "three.meshline";
-import PropStatic from "./entities/PropStatic";
-import BoundingBox from "./entities/BoundingBox";
-import MountingPart from "./props/MountingPart";
-import ParticleEngine from "./classes/ParticleEngine";
-import Particles from "./entities/Particles";
+import PropStatic from "../entities/PropStatic";
+import BoundingBox from "../entities/BoundingBox";
+import MountingPart from "../props/MountingPart";
+import ParticleEngine from "../classes/ParticleEngine";
+import Particles from "../entities/Particles";
 
 export default class PlayerController extends PropDynamic {
   pointer;
@@ -40,7 +40,6 @@ export default class PlayerController extends PropDynamic {
   name;
 
   mountSlots = {};
-  animations = {};
   accentMaterial;
   accentGreyMaterial;
   bodyMaterial;
@@ -78,7 +77,7 @@ export default class PlayerController extends PropDynamic {
   }
 
   onModelLoaded() {
-    this.mountCamera();
+    this.setupInteractions();
     this.addCursor();
 
     Process.addToQueue(() => {
@@ -86,9 +85,7 @@ export default class PlayerController extends PropDynamic {
     });
     
     this.animations = Object.fromEntries(
-      this.children
-        .find((c) => c.name === "player")
-        .animations.map((a) => {
+      this.model.animations.map((a) => {
           return [
             a.name.split("|")[1]?.toLowerCase() || a.name.toLowerCase(),
             this.mixer.clipAction(this.mixer.getAction(a.name)),
@@ -187,7 +184,7 @@ export default class PlayerController extends PropDynamic {
     this.add(this.label);
   }
 
-  mountCamera() {
+  setupInteractions() {
     document.addEventListener("mousedown", this.actionRightClick.bind(this));
     document.addEventListener("mousedown", this.actionLeftClick.bind(this));
     document.addEventListener("mousemove", this.updateCursor.bind(this));
@@ -395,10 +392,11 @@ export default class PlayerController extends PropDynamic {
       ratio = 0.55;
     }
     
-    if (distance > 4.5 && animation === "walk") {
-      animation = "walk_tall";
-      // ratio = 0.55;
-    }
+    // Don't know if we keep it as it kinda breaks animation when spam clicking...
+    // if (distance > 4.5 && animation === "walk") {
+    //   animation = "walk_tall";
+    //   // ratio = 0.55;
+    // }
 
     // If the animation we are going to play is :
     // inexistant (for error handling)

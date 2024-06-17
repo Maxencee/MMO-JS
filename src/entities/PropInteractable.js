@@ -11,6 +11,7 @@ export default class PropInteractable extends BoundingBoxInteractable {
   model;
   clock;
 
+  animations;
   currentAnimation;
 
   constructor(path, options = null) {
