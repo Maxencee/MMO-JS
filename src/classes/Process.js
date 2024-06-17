@@ -2,21 +2,22 @@ import * as THREE from "three";
 import TWEEN from "@tweenjs/tween.js";
 import { CSS2DRenderer } from "three/examples/jsm/Addons.js";
 import Stats from "three/examples/jsm/libs/stats.module.js";
+import UI from "./UI";
 
 export default class Process {
   renderer;
   renderer2D;
   renderID;
 
+  static element;
   static scene;
   static camera;
   static lod;
 
   static stats;
-
   static queue = [];
 
-  constructor({ scene, camera, mode }) {
+  constructor () {
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.frustumCulled = true;
     this.renderer.gammaOutput = true;
@@ -33,9 +34,8 @@ export default class Process {
     this.renderer2D.domElement.classList.add("renderer2D");
     document.body.appendChild(this.renderer2D.domElement);
 
-    Process.scene = scene;
-    Process.camera = camera;
     Process.lod = new THREE.LOD();
+    Process.element = this.renderer.domElement;
   }
 
   static getSceneObjects() {
@@ -57,8 +57,12 @@ export default class Process {
     }
   }
 
-  static switchScene(scene) {
+  static setScene (scene) {
     Process.scene = scene;
+  }
+
+  static setCamera (camera) {
+    Process.camera = camera;
   }
 
   static showStats () {
@@ -74,7 +78,7 @@ export default class Process {
 
   render() {
     if (!Process.scene || !Process.camera) {
-      cancelAnimationFrame(this.renderID);
+      cancelAnimationFrame(Process.renderID);
       return console.error("Scene or Camera unloaded");
     }
 
