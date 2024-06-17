@@ -6,10 +6,10 @@ import {
   Color,
   Euler,
   LoopOnce,
+  LoopRepeat,
   Matrix4,
   Mesh,
   MeshBasicMaterial,
-  MeshPhysicalMaterial,
   Quaternion,
   RingGeometry,
   Vector3,
@@ -96,7 +96,7 @@ export default class PlayerController extends PropDynamic {
         })
     );
 
-    ["jump", "yes", "no", "death", "shoot", "pickup", "kick", "hitrecieve_1", "hitrecieve_2", "punch"].forEach(animation => {
+    ["jump", "yes", "no", "death", "shoot", "pickup", "kick", "hitrecieve_1", "hitrecieve_2", "punch", "swordslash"].forEach(animation => {
       if(!this.animations[animation]) return;
       this.animations[animation].playOnce = function (currentAnimation) {
         this.loop = LoopOnce;
@@ -189,6 +189,7 @@ export default class PlayerController extends PropDynamic {
 
   mountCamera() {
     document.addEventListener("mousedown", this.actionRightClick.bind(this));
+    document.addEventListener("mousedown", this.actionLeftClick.bind(this));
     document.addEventListener("mousemove", this.updateCursor.bind(this));
     document.addEventListener("keypress", this.actionKey.bind(this));
 
@@ -330,6 +331,23 @@ export default class PlayerController extends PropDynamic {
       return;
 
       this.playAction(emote);
+  }
+
+  actionLeftClick(event) {
+    console.log(event);
+    if (event.button !== 0) return;
+
+    let target = this.pointer.position.clone();
+    let start = this.position.clone();
+    start.y = target.y = 0;
+
+    let distance = start.distanceTo(target);
+
+    if(distance > 1) {
+      this.playAction('shoot');
+    } else {
+      this.playAction('swordslash');
+    }
   }
 
   actionRightClick(event) {
