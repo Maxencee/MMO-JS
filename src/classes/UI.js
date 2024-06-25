@@ -2,6 +2,8 @@ export default class UI {
     static three = {};
     static root;
 
+    static modules = {};
+
     static init () {
         UI.root = document.getElementById('root');
     }
@@ -16,7 +18,7 @@ export default class UI {
     }
 
     static remove (name) {
-        return UI.three[name]?.remove()
+        return UI.three[name]?.remove();
     }
   
     static clear () {

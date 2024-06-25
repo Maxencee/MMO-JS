@@ -38,7 +38,7 @@ export default class PlayerStatic extends PropDynamic {
 
     console.log(this.animations);
     // console.log(this);
-    ["jump", "yes", "no"].forEach(animation => {
+    ["jump", "yes", "no", "shoot", "punch"].forEach(animation => {
         if(!this.animations[animation]) return;
         this.animations[animation].playOnce = function () {
           this.loop = LoopOnce;
