@@ -25,7 +25,7 @@ export default class UI {
       UI.root.innerHTML = null;
     }
 
-    static element (tag, attributes, children, events = {}) {
+    static element (tag, attributes = {}, children = [], events = {}) {
         const element = document.createElement(tag);
 
         Object.entries(attributes).forEach(([name, value]) => {

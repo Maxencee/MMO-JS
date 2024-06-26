@@ -25,6 +25,7 @@ import BoundingBox from "../entities/BoundingBox";
 import MountingPart from "../props/MountingPart";
 import ParticleEngine from "../classes/ParticleEngine";
 import Particles from "../entities/Particles";
+import PathFinding from "../classes/PathFinding";
 
 export default class PlayerController extends PropDynamic {
   pointer;
@@ -357,12 +358,17 @@ export default class PlayerController extends PropDynamic {
       this.resetPointer();
       return;
     }
-
-    if (!this.canMove) return;
-
+    
     let target = this.pointer.position.clone();
     let start = this.position.clone();
     start.y = target.y = 0;
+
+    if (!this.canMove) {
+      return;
+        // IMPLEMENT PATH FINDING TEST
+        // const pathFinding = new PathFinding(this);
+        // return pathFinding.findPath(start, target);
+    };
 
     if (start.equals(target) || this.target.position.equals(target)) return;
 

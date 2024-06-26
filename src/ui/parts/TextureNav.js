@@ -2,7 +2,7 @@ import UI from "../../classes/UI";
 import ScrewContainer from "../containers/ScrewContainer";
 
 const textures = [
-  "snakelines","neonlover", "hi","none"
+  "hi","none"
 ]
 
 export default ScrewContainer([

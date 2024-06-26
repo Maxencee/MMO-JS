@@ -17,11 +17,11 @@ import BoundingBox from "./src/entities/BoundingBox";
   // First scene of the game -> home screen;
 
   const _PROCESS = new Process;
-  // Process.setCamera(new IdleCamera);
-  // Process.setScene(new CustomisationScene(0x6e6e6e));
+  Process.setCamera(new IdleCamera);
+  Process.setScene(new CustomisationScene(0x6e6e6e));
 
-  Process.setCamera(new PlayerCamera);
-  Process.setScene(new SandboxScene(0x1b1b1b));
+  // Process.setCamera(new PlayerCamera);
+  // Process.setScene(new SandboxScene(0x1b1b1b));
 
   _PROCESS.render();
 })();

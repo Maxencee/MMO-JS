@@ -82,7 +82,7 @@ export default class CustomisationScene extends Scene {
       if(target.dataset.part == 'none') return;
       model.mountSlots['upgradeHead'].add(new MountingPart(target.dataset.part, model.accentGreyMaterial));
 
-      model.playAction(!randInt(0, 9) ? 'shoot' : 'punch');
+      model.playAction(!randInt(0, 1) ? 'punch' : 'shoot');
     }
 
     UI.add(NavContainer, 'navContainer');
