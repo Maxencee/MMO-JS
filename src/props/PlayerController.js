@@ -63,7 +63,7 @@ export default class PlayerController extends PropDynamic {
       new PropStatic(`assets/models/cosmetics/${cosmetic}/scene.gltf`, options)
     );
   }
-  
+
   removeCosmetic(type) {
     return this.mountSlots[type].children[0]?.removeFromParent();
   }
@@ -83,18 +83,18 @@ export default class PlayerController extends PropDynamic {
     Process.addToQueue(() => {
       this.mixer.update(this.clock.getDelta());
     });
-    
+
     this.animations = Object.fromEntries(
       this.model.animations.map((a) => {
-          return [
-            a.name.split("|")[1]?.toLowerCase() || a.name.toLowerCase(),
-            this.mixer.clipAction(this.mixer.getAction(a.name)),
-          ];
-        })
+        return [
+          a.name.split("|")[1]?.toLowerCase() || a.name.toLowerCase(),
+          this.mixer.clipAction(this.mixer.getAction(a.name)),
+        ];
+      })
     );
 
     ["jump", "yes", "no", "death", "shoot", "pickup", "kick", "hitrecieve_1", "hitrecieve_2", "punch", "swordslash"].forEach(animation => {
-      if(!this.animations[animation]) return;
+      if (!this.animations[animation]) return;
       this.animations[animation].playOnce = function (currentAnimation) {
         this.loop = LoopOnce;
         this.reset().play();
@@ -266,8 +266,8 @@ export default class PlayerController extends PropDynamic {
     }
   }
 
-  actionMountParticles () {
-    if(this.particleSystem) {
+  actionMountParticles() {
+    if (this.particleSystem) {
       this.particleSystem.particleMesh.removeFromParent();
     }
 
@@ -279,12 +279,12 @@ export default class PlayerController extends PropDynamic {
     this.particleSystem.particleMesh.position.copy(
       this.mountSlots.upgradeBack.position
     )
-  
+
     Process.addToScene(this.particleSystem.particleMesh);
 
     Process.addToQueue(() => {
-        this.particleSystem.update(this.particleSystem.clock.getDelta() * 0.5);
-        this.particleSystem.particleMesh.position.copy(this.position).add(new Vector3(0, 0.15, 0));
+      this.particleSystem.update(this.particleSystem.clock.getDelta() * 0.5);
+      this.particleSystem.particleMesh.position.copy(this.position).add(new Vector3(0, 0.15, 0));
     });
   }
 
@@ -327,7 +327,7 @@ export default class PlayerController extends PropDynamic {
     )
       return;
 
-      this.playAction(emote);
+    this.playAction(emote);
   }
 
   actionLeftClick(event) {
@@ -340,7 +340,7 @@ export default class PlayerController extends PropDynamic {
 
     let distance = start.distanceTo(target);
 
-    if(distance > 1) {
+    if (distance > 1) {
       this.playAction('shoot');
     } else {
       this.playAction('swordslash');
@@ -358,7 +358,7 @@ export default class PlayerController extends PropDynamic {
       return;
     }
 
-    if (!this.canMove) return;
+    if (!this.canMove) return this.findPath(this.position, this.pointer.position);
 
     let target = this.pointer.position.clone();
     let start = this.position.clone();
@@ -387,11 +387,11 @@ export default class PlayerController extends PropDynamic {
     let distance = start.distanceTo(target);
     let ratio = 1;
 
-    if(distance > 7 && animation === "walk") {
+    if (distance > 7 && animation === "walk") {
       animation = "run";
       ratio = 0.55;
     }
-    
+
     // Don't know if we keep it as it kinda breaks animation when spam clicking...
     // if (distance > 4.5 && animation === "walk") {
     //   animation = "walk_tall";
@@ -505,7 +505,7 @@ export default class PlayerController extends PropDynamic {
       this.pointer.position.z = Math.round(target.point.z);
       this.updateLine();
 
-      if(this.lockMovements) {
+      if (this.lockMovements) {
         this.line.material.color = new Color(0xff2e2e);
         this.pointer.material.color = new Color(0xff2e2e);
         return;
@@ -570,5 +570,183 @@ export default class PlayerController extends PropDynamic {
       this.interactableTarget?.interactableLeaveRange();
       this.interactableTarget = null;
     }
+  }
+
+
+
+  /// 
+
+  findPath(start, target) {
+    const path = this.flowfieldAlgorithm(start, target);
+  
+    // Move player along the computed path
+    this.movePlayerAlongPath(path);
+  }
+  
+  flowfieldAlgorithm(start, target) {
+    // Determine the extents of the grid based on start and target positions
+    const minX = Math.min(start.x, target.x);
+    const maxX = Math.max(start.x, target.x);
+    const minZ = Math.min(start.z, target.z);
+    const maxZ = Math.max(start.z, target.z);
+  
+    // Calculate grid dimensions
+    const gridWidth = Math.ceil(maxX) - Math.floor(minX) + 1;
+    const gridHeight = Math.ceil(maxZ) - Math.floor(minZ) + 1;
+  
+    // Initialize the grid with all zeros (assuming all clear paths initially)
+    const grid = Array.from({ length: gridWidth }, () => Array(gridHeight).fill(0));
+  
+    // Convert start and target positions to grid indices
+    const startX = Math.floor(start.x - minX);
+    const startZ = Math.floor(start.z - minZ);
+    const targetX = Math.floor(target.x - minX);
+    const targetZ = Math.floor(target.z - minZ);
+  
+    // Set obstacles (1s) at specific positions
+    // Here we set a single obstacle between start and target for demonstration purposes
+    const obstacleX = Math.floor((startX + targetX) / 2);
+    const obstacleZ = Math.floor((startZ + targetZ) / 2);
+    grid[obstacleX][obstacleZ] = 1;
+  
+    // Initialize distance field with Infinity
+    const distanceField = Array.from({ length: gridWidth }, () => Array(gridHeight).fill(Infinity));
+  
+    // Define grid boundaries
+    const gridMinX = 0;
+    const gridMaxX = gridWidth - 1;
+    const gridMinZ = 0;
+    const gridMaxZ = gridHeight - 1;
+  
+    // Priority queue for open list
+    const openList = [];
+    // Closed set to keep track of visited nodes
+    const closedSet = new Set();
+  
+    // Start point has a distance of 0
+    distanceField[startX][startZ] = 0;
+    openList.push({ x: startX, z: startZ });
+  
+    while (openList.length > 0) {
+      // Extract node with smallest distance
+      openList.sort((a, b) => distanceField[a.x][a.z] - distanceField[b.x][b.z]);
+      const current = openList.shift();
+  
+      // If current node is the target, break out of loop
+      if (current.x === targetX && current.z === targetZ) {
+        break;
+      }
+  
+      // Get neighbors of current node
+      const neighbors = this.getNeighbors(current);
+  
+      neighbors.forEach((neighbor) => {
+        const neighborX = neighbor.x;
+        const neighborZ = neighbor.z;
+  
+        // Check if neighbor is within grid bounds
+        if (neighborX < gridMinX || neighborX > gridMaxX || neighborZ < gridMinZ || neighborZ > gridMaxZ) {
+          return; // Skip out-of-bounds neighbors
+        }
+  
+        // Check if neighbor is an obstacle
+        if (grid[neighborX][neighborZ] === 1) {
+          return; // Skip obstacles
+        }
+  
+        // Calculate tentative distance to neighbor
+        const tentativeDistance = distanceField[current.x][current.z] + 1;
+  
+        // Update distance if shorter path found
+        if (tentativeDistance < distanceField[neighborX][neighborZ]) {
+          distanceField[neighborX][neighborZ] = tentativeDistance;
+          openList.push({ x: neighborX, z: neighborZ });
+        }
+      });
+  
+      // Add current node to closed set
+      closedSet.add(`${current.x},${current.z}`);
+    }
+  
+    // Reconstruct path from target to start
+    const path = [];
+    let currentPos = { x: targetX, z: targetZ };
+  
+    while (!(currentPos.x === startX && currentPos.z === startZ)) {
+      path.push({ x: currentPos.x, z: currentPos.z });
+  
+      // Find the neighbor with the lowest distance
+      const neighbors = this.getNeighbors(currentPos);
+      let minDistance = Infinity;
+      let nextPos = null;
+  
+      neighbors.forEach((neighbor) => {
+        const neighborX = neighbor.x;
+        const neighborZ = neighbor.z;
+  
+        if (neighborX < gridMinX || neighborX > gridMaxX || neighborZ < gridMinZ || neighborZ > gridMaxZ) {
+          return; // Skip out-of-bounds neighbors
+        }
+  
+        if (grid[neighborX][neighborZ] === 1) {
+          return; // Skip obstacles
+        }
+  
+        if (distanceField[neighborX][neighborZ] < minDistance) {
+          minDistance = distanceField[neighborX][neighborZ];
+          nextPos = neighbor;
+        }
+      });
+  
+      if (!nextPos) {
+        console.error('No valid next position found from:', currentPos.x, currentPos.z);
+        break;
+      }
+  
+      currentPos = nextPos;
+    }
+  
+    // Add start position to path
+    path.push({ x: startX, z: startZ });
+  
+    // Reverse path to get start to target order
+    path.reverse();
+  
+    return path.map(({ x, z }) => ({ x: x + minX, z: z + minZ }));
+  }
+  
+  getNeighbors(pos) {
+    const { x, z } = pos;
+    const neighbors = [
+      { x: x + 1, z }, // Right
+      { x: x - 1, z }, // Left
+      { x, z: z + 1 }, // Up
+      { x, z: z - 1 }, // Down
+      { x: x + 1, z: z + 1 }, // Top-right (Diagonal)
+      { x: x - 1, z: z - 1 }, // Bottom-left (Diagonal)
+      { x: x + 1, z: z - 1 }, // Bottom-right (Diagonal)
+      { x: x - 1, z: z + 1 }, // Top-left (Diagonal)
+    ];
+  
+    return neighbors;
+  }
+  
+  movePlayerAlongPath(path) {
+    let index = 0;
+  
+    const interval = setInterval(() => {
+      if (index < path.length) {
+        const nextPosition = path[index];
+        console.log('Moving to:', nextPosition);
+  
+        // Assuming playerMovementFunction moves the player to nextPosition
+        this.moveTo(nextPosition);
+  
+        index++;
+      } else {
+        clearInterval(interval);
+        console.log('Reached the target!');
+      }
+    }, 1000); // Adjust interval as needed for smooth movement
   }
 }

@@ -1,6 +1,10 @@
 import BoundingBox from "../entities/BoundingBox";
 import LightEnvironment from "../entities/LightEnvironment";
 import Process from "../classes/Process";
+
+import SandboxScene from "./SandboxScene";
+import PlayerCamera from "../props/PlayerCamera";
+
 import {
   BoxGeometry,
   Color,
@@ -54,9 +58,9 @@ export default class CustomisationScene extends Scene {
       model.playAction(!randInt(0, 9) ? 'jump' : 'yes');
     }
 
+
     UI.add(
       ScrewContainer([
-        "test",
         UI.element("span", {}, ["NeonShooter"], {
           click: () => loadTexture("neonshooter"),
         }),
@@ -76,10 +80,14 @@ export default class CustomisationScene extends Scene {
           click: () => loadTexture("warrior"),
         }),
         UI.element("span", {}, ["Mount"], {
-          click: () =>
+          click: () =>{
+            model.mountSlots.upgradeHead.children.forEach((child) => {
+              model.mountSlots.upgradeHead.remove(child);
+            });
             model.mountSlots.upgradeHead.add(
               new MountingPart("gatling", model.accentGreyMaterial)
-            ),
+            )  
+          },
         }),
         UI.element("span", {}, ["Color"], {
           click: () => {
@@ -94,7 +102,35 @@ export default class CustomisationScene extends Scene {
             );
           },
         }),
-      ])
+      ]),
     );
+
+    UI.add(
+            // Create a screw container with the play button and change the scene to the sandbox scene
+            UI.element(
+              "div",
+              {
+                //center the cointainer to the top
+                class: "absolute w-10/12 absolute-center-x top-8 flex items-center gap-2 screw-container px-16 py-8",
+              },
+              [
+                UI.element(
+                  "button",
+                  {
+                    class: "button button-primary",
+                  },
+                  ["Play"],
+                  {
+                    click: () => {
+                      Process.setCamera(new PlayerCamera);
+                      Process.setScene(new SandboxScene(0x1b1b1b));
+                      // remove the screw container
+                      console.log(UI.clear());
+                    },
+                  }
+                ),
+              ]
+            )
+    )
   }
 }
