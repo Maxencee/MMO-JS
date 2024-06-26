@@ -357,12 +357,17 @@ export default class PlayerController extends PropDynamic {
       this.resetPointer();
       return;
     }
-
-    if (!this.canMove) return this.findPath(this.position, this.pointer.position);
-
+    
     let target = this.pointer.position.clone();
     let start = this.position.clone();
     start.y = target.y = 0;
+
+    if (!this.canMove) {
+      return;
+        // IMPLEMENT PATH FINDING TEST
+        // const pathFinding = new PathFinding(this);
+        // return pathFinding.findPath(start, target);
+    };
 
     if (start.equals(target) || this.target.position.equals(target)) return;
 
