@@ -3,6 +3,7 @@ logs
 *.log
 
 private/
+backup/
 
 # Vite build
 build/
