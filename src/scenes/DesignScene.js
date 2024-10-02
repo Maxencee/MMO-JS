@@ -19,30 +19,17 @@ export default class DesignScene extends Scene {
 
     this.add(new Floor());
 
-    let container = UI.element('div', {
-      style: "width: fit-content; margin: 12px"
-    }, [], {
-      click: (event) => event.stopPropagation()
-    });
+    FurnitureCollection.items.forEach((item) => {
+      let r = new THREE.WebGLRenderer({ antialias: true,  });
+      r.setSize(200, 200);
+      r.setPixelRatio(window.devicePixelRatio);
+  
+      let [camera, scene] = ItemScene.init(item);
+      camera.aspect = 1;
+      camera.updateProjectionMatrix();
+  
+      scene.item.onModelLoaded = () => r.render(scene, camera);
 
-    UI.add(container, 'item');
-
-    let item = FurnitureCollection.items[0];
-    let r = new THREE.WebGLRenderer({ antialias: true,  });
-    r.setSize(200, 200);
-    r.setPixelRatio(window.devicePixelRatio);
-
-    let [camera, scene] = ItemScene.init(item, container);
-    camera.aspect = 1;
-    camera.updateProjectionMatrix();
-/*     camera.controls.addEventListener('change', () => {
-      r.render(scene, camera);
-    }); */
-
-    scene.item.onModelLoaded = () => r.render(scene, camera);
-    UI.get('item').appendChild(r.domElement);
-
-    /* FurnitureCollection.items.forEach((item) => {
       UI.add(
         UI.element("button", {
           innerText: item,
@@ -65,9 +52,11 @@ export default class DesignScene extends Scene {
             });
           },
           style: "margin: 0 0.2rem",
-        })
+        }, [
+          r.domElement
+        ])
       );
-    }); */
+    });
 
     UI.add(
       UI.element('button', {

@@ -19,7 +19,7 @@ export default class ItemScene extends Scene {
         this.add(camera);
     }
 
-    static init (item, container) {
+    static init (item) {
         const camera = new THREE.PerspectiveCamera();
 
         camera.position.set(2, 2, 3);
