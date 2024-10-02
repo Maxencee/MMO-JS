@@ -18,7 +18,7 @@ import DesignScene from "./src/scenes/DesignScene";
 
   const _PROCESS = new Process;
   Process.setCamera(new ControlCamera);
-  Process.setScene(new DesignScene(0x73a4ff));
+  Process.setScene(new DesignScene());
 
   _PROCESS.render();
 })();
