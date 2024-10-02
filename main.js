@@ -9,8 +9,7 @@ import DesignScene from "./src/scenes/DesignScene";
 ("use strict");
 (async function () {
   document.addEventListener("contextmenu", (evt) => evt.preventDefault());
-
-  UI.init();
+  
   Process.showStats();
   BoundingBox.setMode('hidden');
 

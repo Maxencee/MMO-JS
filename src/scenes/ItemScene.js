@@ -22,8 +22,8 @@ export default class ItemScene extends Scene {
     static init (item) {
         const camera = new THREE.PerspectiveCamera();
 
-        camera.position.set(2, 2, 3);
-        camera.lookAt(new THREE.Vector3(0, 0, 0));
+        camera.position.set(3, 2, 4);
+        camera.lookAt(new THREE.Vector3(0, 1, 0));
 
         return [camera, new ItemScene(item, camera)];
     }

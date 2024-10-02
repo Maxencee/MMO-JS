@@ -54,6 +54,13 @@ body {
     cursor: pointer;
 }
 
+#root > #renderers {
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
 .absolute-center {
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
 }
@@ -71,7 +78,7 @@ canvas, .renderer2D {
 }
 
 .renderer2D {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    position: absolute; top: 0; left: 0;
     z-index: 20;
 }
 

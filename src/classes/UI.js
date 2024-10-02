@@ -1,11 +1,13 @@
 export default class UI {
     static three = {};
     static root;
+    static renderers;
 
     static modules = {};
 
     static init () {
         UI.root = document.getElementById('root');
+        UI.renderers = document.getElementById('renderers');
     }
 
     static add (element, name = null) {

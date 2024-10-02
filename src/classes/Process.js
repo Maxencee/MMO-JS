@@ -27,12 +27,14 @@ export default class Process {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    document.body.appendChild(this.renderer.domElement);
+
+    UI.init();
+    UI.renderers.appendChild(this.renderer.domElement);
 
     this.renderer2D = new CSS2DRenderer();
     this.renderer2D.setSize(window.innerWidth, window.innerHeight);
     this.renderer2D.domElement.classList.add("renderer2D");
-    document.body.appendChild(this.renderer2D.domElement);
+    UI.renderers.appendChild(this.renderer2D.domElement);
 
     Process.lod = new THREE.LOD();
     Process.element = this.renderer.domElement;

@@ -19,6 +19,11 @@ export default class DesignScene extends Scene {
 
     this.add(new Floor());
 
+    UI.add(UI.element('div', {
+      class: "absolute-center",
+      style: "display: flex; flex-wrap: wrap; justify-content: center; align-items: center; padding: 0.5rem; overflow-y: auto; height: 50dvh"
+    }), 'container');
+
     FurnitureCollection.items.forEach((item) => {
       let r = new THREE.WebGLRenderer({ antialias: true,  });
       r.setSize(200, 200);
@@ -30,7 +35,7 @@ export default class DesignScene extends Scene {
   
       scene.item.onModelLoaded = () => r.render(scene, camera);
 
-      UI.add(
+      UI.get('container').appendChild(
         UI.element("button", {
           innerText: item,
           onclick: () => {
@@ -70,6 +75,7 @@ export default class DesignScene extends Scene {
     UI.add(
       UI.element('button', {
         innerText: 'Load test.json',
+        style: "margin-left: 4rem",
         onclick: () => {
           fetch('/src/scenes/maps/test.json').then(res => res.json()).then(data => {
             data.items.forEach(item => {
@@ -101,7 +107,7 @@ export default class DesignScene extends Scene {
       items: []
     };
 
-    const transformControl = new TransformControls(Process.camera, UI.root);
+    const transformControl = new TransformControls(Process.camera, UI.renderers);
     transformControl.addEventListener("dragging-changed", function (event) {
       Process.camera.controls.enabled = !event.value;
       transformControl.isUsed = true;

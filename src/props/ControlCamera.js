@@ -19,7 +19,7 @@ export default class ControlCamera extends THREE.PerspectiveCamera {
     this.position.set(0, 2, 3);
     this.lookAt(new THREE.Vector3(0, 0, 0));
 
-    this.controls = new OrbitControls(this, UI.root);
+    this.controls = new OrbitControls(this, UI.renderers);
     this.controls.dampingFactor = 0.05;
 
     this.controls.screenSpacePanning = false;
