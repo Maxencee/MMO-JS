@@ -28,7 +28,5 @@ export default class ControlCamera extends THREE.PerspectiveCamera {
     this.controls.maxDistance = 100;
 
     this.controls.maxPolarAngle = Math.PI / 2;
-
-    Process.addToQueue(() => this.controls.update() || true);
   }
 }

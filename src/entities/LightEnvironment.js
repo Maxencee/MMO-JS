@@ -1,6 +1,9 @@
 import { AmbientLight, CameraHelper, DirectionalLight, Vector3 } from "three";
+import BoundingBox from "./BoundingBox";
 
 export default class LightEnvironment extends DirectionalLight {
+    static enableHelper = false;
+
     constructor (color, intensity) {
         super(color, intensity);
 
@@ -17,8 +20,10 @@ export default class LightEnvironment extends DirectionalLight {
         this.shadow.camera.left = -32;
         this.shadow.camera.right = 32;
 
-        const helper = new CameraHelper(this.shadow.camera);
-        this.add(helper);
+        if(LightEnvironment.enableHelper) {
+            const helper = new CameraHelper(this.shadow.camera);
+            this.add(helper);
+        }
 
         const ambientLight = new AmbientLight(color);
         ambientLight.intensity = intensity - 0.65;

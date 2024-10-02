@@ -8,6 +8,7 @@ import { TransformControls } from "three/addons/controls/TransformControls.js";
 import UI from "../classes/UI";
 import * as THREE from "three";
 import Process from "../classes/Process";
+import ItemScene from "./ItemScene";
 
 export default class DesignScene extends Scene {
   constructor() {
@@ -18,7 +19,30 @@ export default class DesignScene extends Scene {
 
     this.add(new Floor());
 
-    FurnitureCollection.items.forEach((item) => {
+    let container = UI.element('div', {
+      style: "width: fit-content; margin: 12px"
+    }, [], {
+      click: (event) => event.stopPropagation()
+    });
+
+    UI.add(container, 'item');
+
+    let item = FurnitureCollection.items[0];
+    let r = new THREE.WebGLRenderer({ antialias: true,  });
+    r.setSize(200, 200);
+    r.setPixelRatio(window.devicePixelRatio);
+
+    let [camera, scene] = ItemScene.init(item, container);
+    camera.aspect = 1;
+    camera.updateProjectionMatrix();
+/*     camera.controls.addEventListener('change', () => {
+      r.render(scene, camera);
+    }); */
+
+    scene.item.onModelLoaded = () => r.render(scene, camera);
+    UI.get('item').appendChild(r.domElement);
+
+    /* FurnitureCollection.items.forEach((item) => {
       UI.add(
         UI.element("button", {
           innerText: item,
@@ -31,11 +55,62 @@ export default class DesignScene extends Scene {
             });
 
             this.add(prop);
+            mapdata.items.push({
+              position: prop.position,
+              rotation: prop.rotation,
+              scale: prop.scale,
+              name: prop.model?.name,
+              model: item,
+              id: prop.id
+            });
           },
           style: "margin: 0 0.2rem",
         })
       );
-    });
+    }); */
+
+    UI.add(
+      UI.element('button', {
+        innerText: 'Save',
+        onclick: () => {
+          console.log(mapdata, JSON.stringify(mapdata));
+        }
+      })
+    );
+
+    UI.add(
+      UI.element('button', {
+        innerText: 'Load test.json',
+        onclick: () => {
+          fetch('/src/scenes/maps/test.json').then(res => res.json()).then(data => {
+            data.items.forEach(item => {
+              console.log(item);
+              const prop = FurnitureCollection.createItem(item.model, {
+                position: new THREE.Vector3(item.position.x, item.position.y, item.position.z),
+                rotation: new THREE.Euler(item.rotation._x, item.rotation._y, item.rotation._z),
+                scale: new THREE.Vector3(item.scale.x, item.scale.y, item.scale.z),
+                shadow: 2
+              });
+
+              prop.onModelLoaded = () => {
+                this.add(prop);
+                mapdata.items.push({
+                  position: prop.position,
+                  rotation: prop.rotation,
+                  scale: prop.scale,
+                  model: item.model,
+                  id: prop.id
+                });
+              }
+            });
+          });
+        }
+      })
+    );
+
+    const mapdata = {
+      items: []
+    };
 
     const transformControl = new TransformControls(Process.camera, UI.root);
     transformControl.addEventListener("dragging-changed", function (event) {
@@ -43,15 +118,27 @@ export default class DesignScene extends Scene {
       transformControl.isUsed = true;
     });
 
+    transformControl.addEventListener("change", updateObject);
+
     transformControl.visible = false;
     transformControl.setMode("translate");
     this.add(transformControl);
+
+    function updateObject () {
+      if(transformControl.object) {
+        const item = mapdata.items.find(e => e?.id === transformControl.object?.id);
+        item.position.copy(transformControl.object.position);
+        item.rotation.copy(transformControl.object.rotation);
+        item.scale.copy(transformControl.object.scale);
+      }
+    }
 
     window.addEventListener("contextmenu", () => transformControl.detach());
 
     window.addEventListener("keypress", (event) => {
       //console.log(event.code);
       if (event.code === "KeyX") {
+        mapdata.items = mapdata.items.filter(e => e.id !== transformControl.object?.id);
         transformControl.object?.removeFromParent();
         transformControl.detach();
       }
@@ -69,9 +156,13 @@ export default class DesignScene extends Scene {
       }
 
       if (event.code === "Space") {
-        if (transformControl.object)
+        if (!transformControl.object) return;
           transformControl.object.position.y =
             transformControl.object.size.y / 2;
+          
+          transformControl.object.rotation.copy(new THREE.Euler(0, 0, 0));
+
+          updateObject();
       }
     });
 
