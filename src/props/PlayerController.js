@@ -48,7 +48,7 @@ export default class PlayerController extends PropDynamic {
 
   constructor(name) {
     super("assets/models/player.fbx", {
-      scale: new Vector3(0.0025, 0.0025, 0.0025),
+      scale: new Vector3(0.085, 0.085, 0.085),
       bounding: 0xffffff,
       boundings: new Vector3(0.5, 1.3, 0.5),
       // material: new MeshBasicMaterial({ color: 0xffcaa8 }),
@@ -60,7 +60,7 @@ export default class PlayerController extends PropDynamic {
 
   loadCosmetic(cosmetic, type, options) {
     this.mountSlots[type].add(
-      new PropStatic(`assets/models/cosmetics/${cosmetic}/scene.gltf`, options)
+      new PropStatic(`assets/models/${cosmetic}`, options)
     );
   }
 
@@ -92,6 +92,8 @@ export default class PlayerController extends PropDynamic {
         ];
       })
     );
+    
+    console.log(this.animations);
 
     ["jump", "yes", "no", "death", "shoot", "pickup", "kick", "hitrecieve_1", "hitrecieve_2", "punch", "swordslash"].forEach(animation => {
       if (!this.animations[animation]) return;
@@ -132,15 +134,17 @@ export default class PlayerController extends PropDynamic {
         });
       }
 
-      if (node.name === "Head_end" && node.type === "Bone") {
+      if (node.name === "mixamorig1HeadTop_End" && node.type === "Bone") {
         this.mountSlots.cosmeticHat = new BoundingBox(0.5, 0.5, 0.5, 0xff6a59);
         node.add(this.mountSlots.cosmeticHat);
       }
 
-      if (node.name === "Body" && node.type === "Bone") {
+      if (node.name === "mixamorig1Spine" && node.type === "Bone") {
         this.mountSlots.upgradeBody = new BoundingBox(0.5, 0.5, 0.5, 0xff6a59);
         node.add(this.mountSlots.upgradeBody);
       }
+
+      console.log(node);
 
       if (node.name === "Head" && node.type === "Bone") {
         this.mountSlots.upgradeLeft = new BoundingBox(0.5, 0.5, 0.5, 0xff6a59);
@@ -182,6 +186,8 @@ export default class PlayerController extends PropDynamic {
     this.label.position.set(0, this.size.y + this.position.y / 2, 0);
     this.label.center.set(0.48, 0);
     this.add(this.label);
+
+    this.actionEquipCosmetic();
   }
 
   setupInteractions() {
@@ -201,8 +207,8 @@ export default class PlayerController extends PropDynamic {
     pointerMaterial.polygonOffset = true;
     pointerMaterial.polygonOffsetFactor = -0.1;
 
-    this.pointer = new Mesh(new RingGeometry(0.45, 0.5), pointerMaterial);
-    this.pointer.base = new RingGeometry(0.45, 0.5);
+    this.pointer = new Mesh(new RingGeometry(0.2, 0.25), pointerMaterial);
+    this.pointer.base = new RingGeometry(0.2, 0.25);
 
     const flatPosition = new Vector3(this.position.x, 0, this.position.z);
 
@@ -230,11 +236,16 @@ export default class PlayerController extends PropDynamic {
     targetM.transparent = true;
     targetM.opacity = 0.65;
 
-    this.target = new Mesh(new CircleGeometry(0.35), targetM);
-    this.target.add(new Mesh(new RingGeometry(0.45, 0.5), targetM));
+    this.target = new Mesh(new CircleGeometry(0.2), targetM);
+    this.target.add(new Mesh(new RingGeometry(0.2, 0.25), lineMaterial));
 
     this.target.rotateX(-Math.PI / 2);
     this.target.visible = false;
+
+    const bottomCircle = new Mesh(new CircleGeometry(0.2), pointerMaterial);
+    bottomCircle.rotateX(-Math.PI / 2);
+    bottomCircle.position.y = -this.size.y/2;
+    this.add(bottomCircle);
 
     Process.addToScene(this.pointer);
     Process.addToScene(this.line);
@@ -308,12 +319,12 @@ export default class PlayerController extends PropDynamic {
   actionEquipCosmetic() {
     if (this.removeCosmetic("cosmeticHat")) return;
 
-    this.loadCosmetic('hat', 'cosmeticHat', {
-      scale: new Vector3(0.35, 0.35, 0.35),
+/*     this.loadCosmetic('bucket-hat/BucketHat.gltf', 'cosmeticHat', {
+      scale: new Vector3(30, 30, 30),
       rotation: new Euler(0, 0, 0),
-      position: new Vector3(0, -0.35, 0),
+      position: new Vector3(0, -10, -4),
       material: this.accentMaterial
-    });
+    }); */
   }
 
   actionEmote(code) {
@@ -377,7 +388,7 @@ export default class PlayerController extends PropDynamic {
     this.moveTo(target);
   }
 
-  moveTo(target, animation = "walk") {
+  moveTo(target, animation = "walking") {
     if (this.tween) this.tween.stop();
     if (this.lockMovements) return;
     // this is super important, the player was casting collision at 0y of itself causing non-collisions of small objects
@@ -463,10 +474,7 @@ export default class PlayerController extends PropDynamic {
 
   isMoving() {
     return (
-      this.animations.walk.isRunning() ||
-      this.animations.run.isRunning() ||
-      this.animations.walk_tall.isRunning() ||
-      this.animations.run_tall.isRunning()
+      this.animations.walking.isRunning()
     );
   }
 
@@ -506,8 +514,8 @@ export default class PlayerController extends PropDynamic {
     }
 
     if (target) {
-      this.pointer.position.x = Math.round(target.point.x);
-      this.pointer.position.z = Math.round(target.point.z);
+      this.pointer.position.x = target.point.x;
+      this.pointer.position.z = target.point.z;
       this.updateLine();
 
       if (this.lockMovements) {

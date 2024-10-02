@@ -1,10 +1,10 @@
-import IdleCamera from "./src/props/IdleCamera";
 import PlayerCamera from "./src/props/PlayerCamera";
 import Process from "./src/classes/Process";
-import CustomisationScene from "./src/scenes/CustomisationScene";
 import SandboxScene from "./src/scenes/SandboxScene";
 import UI from "./src/classes/UI";
 import BoundingBox from "./src/entities/BoundingBox";
+import ControlCamera from "./src/props/ControlCamera";
+import DesignScene from "./src/scenes/DesignScene";
 
 ("use strict");
 (async function () {
@@ -17,11 +17,8 @@ import BoundingBox from "./src/entities/BoundingBox";
   // First scene of the game -> home screen;
 
   const _PROCESS = new Process;
-  Process.setCamera(new IdleCamera);
-  Process.setScene(new CustomisationScene(0x6e6e6e));
-
-  // Process.setCamera(new PlayerCamera);
-  // Process.setScene(new SandboxScene(0x1b1b1b));
+  Process.setCamera(new ControlCamera);
+  Process.setScene(new DesignScene(0x73a4ff));
 
   _PROCESS.render();
 })();

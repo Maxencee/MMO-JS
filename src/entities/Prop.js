@@ -24,6 +24,8 @@ export default class Prop extends BoundingBox {
       material = options.material;
     }
 
+    if(path == null) return;
+
     const isFBX = path.endsWith(".fbx");
     const loader = isFBX ? new FBXLoader() : new GLTFLoader();
     loader.load(path, (model) => {
@@ -48,7 +50,7 @@ export default class Prop extends BoundingBox {
       this.size = options.boundings || this.bounding.getSize(new THREE.Vector3());
       this.position.y = this.size.y / 2;
       
-      if (!options.position) this.model.position.y = -this.size.y / 2;
+      if (!options.position || !options.position.y) this.model.position.y = -this.size.y / 2;
       
       this.geometry.scale(this.size.x, this.size.y, this.size.z);
 
@@ -57,6 +59,6 @@ export default class Prop extends BoundingBox {
     });
   }
 
-  beforeModelLoaded() {}
+  beforeOnModelLoaded() {}
   onModelLoaded() {}
 }

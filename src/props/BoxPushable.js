@@ -4,12 +4,15 @@ import TWEEN from "@tweenjs/tween.js";
 
 export default class BoxPushable extends PropInteractable {
   constructor() {
-    super("assets/models/lootbox.gltf", {
+    super(null, {
       // bounding: 0xffffff,
-      // boundings: new THREE.Vector3(1, 1, 1),
-      scale: new THREE.Vector3(1.5, 1.5, 1.5),
+      boundings: new THREE.Vector3(0.25, 0.25, 0.25),
+      scale: new THREE.Vector3(0.25, 0.25, 0.25),
       shadow: PropInteractable.RECEIVE_SHADOW,
     });
+
+    this.geometry.copy(new THREE.BoxGeometry(0.5, 0.5, 0.5));
+    this.material.copy(new THREE.MeshStandardMaterial({ color: 0x00ff00 }));
   }
 
   interact(interactor) {
@@ -33,15 +36,15 @@ export default class BoxPushable extends PropInteractable {
     interactor.lookAt(vtarget);
     interactor.resetPointer();
     interactor.lockMovements = true;
-    interactor.animations.kick.loop = THREE.LoopOnce;
-    interactor.animations.kick.reset().play();
+    interactor.animations.pushing.loop = THREE.LoopOnce;
+    interactor.animations.pushing.reset().play();
 
     this.interactableLeaveRange();
     // console.log(interactorTween);
     this.tween = new TWEEN.Tween(start)
-      .delay(400)
-      .to(target, 340)
-      .easing(TWEEN.Easing.Back.Out)
+      .delay(1300)
+      .to(target, 2000)
+      .easing(TWEEN.Easing.Quartic.Out)
       .onUpdate((position, progress) => {
         let [collisions, dirLength] = this.getCollisions(start, [
           start,

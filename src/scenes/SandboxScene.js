@@ -22,6 +22,6 @@ export default class SandboxScene extends Scene {
         this.add(box);
         this.add(box2);
         
-        this.add(new PlayerController("Leela"));
+        this.add(new PlayerController("Maxence"));
     }
 }

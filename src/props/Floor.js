@@ -21,7 +21,7 @@ export default class Floor extends Mesh {
     axesHelper.position.y = 0.501;
     this.add(axesHelper);
 
-    const gridHelper = new GridHelper(25, 25, 0xeb4034);
+    const gridHelper = new GridHelper(25, 100, 0xeb4034);
     gridHelper.position.y = 0.5;
     gridHelper.material.transparent = true;
     gridHelper.material.opacity = 0.2;

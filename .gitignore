@@ -4,6 +4,8 @@ logs
 
 private/
 backup/
+animations/
+models/
 
 # Vite build
 build/
@@ -22,3 +24,5 @@ node_modules/
 .env.production.local
 .env.local
 IDEAS.md
+
+.DS_store
