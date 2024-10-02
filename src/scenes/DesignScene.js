@@ -2,6 +2,7 @@ import Scene from "../classes/Scene";
 import LightEnvironment from "../entities/LightEnvironment";
 import Floor from "../props/Floor";
 import BoundingBox from "../entities/BoundingBox";
+import { FurnitureCollection } from "../props/items/FurnitureCollection";
 import { NatureCollection } from "../props/items/NatureCollection";
 import { TransformControls } from "three/addons/controls/TransformControls.js";
 import UI from "../classes/UI";
@@ -13,16 +14,16 @@ export default class DesignScene extends Scene {
     super(0xe9f0f5);
 
     BoundingBox.setMode("hidden");
-    this.add(new LightEnvironment(0xfaf4f0, 2));
+    this.add(new LightEnvironment(0xfaf4f0, 3));
 
     this.add(new Floor());
 
-    NatureCollection.items.forEach((item) => {
+    FurnitureCollection.items.forEach((item) => {
       UI.add(
         UI.element("button", {
           innerText: item,
           onclick: () => {
-            const prop = NatureCollection.createItem(item, {
+            const prop = FurnitureCollection.createItem(item, {
               position: new THREE.Vector3(0, 0, 0),
               rotation: new THREE.Euler(0, 0, 0),
               scale: new THREE.Vector3(1, 1, 1),
