@@ -20,7 +20,9 @@ export default class UI {
     }
 
     static remove (name) {
-        return UI.three[name]?.remove();
+        UI.three[name]?.remove();
+        delete UI.three[name];
+        return true;
     }
   
     static clear () {
