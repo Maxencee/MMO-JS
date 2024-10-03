@@ -9,6 +9,7 @@ import Process from "../classes/Process";
 import { Inventory } from "../ui/Inventory";
 import { MapButtons } from "../ui/MapButtons";
 import PropStatic from "../entities/PropStatic";
+import PropDetail from "../entities/PropDetail";
 
 export default class DesignScene extends Scene {
   static mapdata = {
@@ -17,7 +18,7 @@ export default class DesignScene extends Scene {
 
   static loadMap (data) {
     data.items.forEach(item => {
-      const prop = new PropStatic(item.model, {
+      const prop = new PropDetail(item.model, {
         position: new THREE.Vector3(item.position.x, item.position.y, item.position.z),
         rotation: new THREE.Euler(item.rotation._x, item.rotation._y, item.rotation._z),
         scale: new THREE.Vector3(item.scale.x, item.scale.y, item.scale.z),
@@ -149,7 +150,7 @@ export default class DesignScene extends Scene {
       if (intersects.length > 0) {
         const object = intersects.filter(
           (e) => e.object.model && e.object.id !== transformControl.object?.id
-        )[0]?.object;
+        ).pop()?.object;
 
         transformControl.object?.outline?.removeFromParent();
         transformControl.detach();

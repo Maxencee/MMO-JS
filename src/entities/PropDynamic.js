@@ -52,7 +52,7 @@ export default class PropDynamic extends Prop {
     });
 
     let objects = Process.getSceneObjects();
-    objects = objects.filter((o) => o.id !== this.id);
+    objects = objects.filter((o) => o.id !== this.id && o.isCollidable);
     let collisions = rays
       .map((ray) => ray.intersectObjects(objects, true))
       .flat(2);

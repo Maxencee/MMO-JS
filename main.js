@@ -11,7 +11,7 @@ import DesignScene from "./src/scenes/DesignScene";
   document.addEventListener("contextmenu", (evt) => evt.preventDefault());
   
   Process.showStats();
-  BoundingBox.setMode('wireframe');
+  BoundingBox.setMode('hidden');
 
   // First scene of the game -> home screen;
 

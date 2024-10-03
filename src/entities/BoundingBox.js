@@ -20,7 +20,7 @@ export default class BoundingBox extends Mesh {
   static material = new MeshStandardMaterial({
     color: 0xffffff,
     transparent: true,
-    opacity: 1,
+    opacity: 0,
     depthWrite: true,
   });
 

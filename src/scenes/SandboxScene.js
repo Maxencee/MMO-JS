@@ -4,6 +4,7 @@ import LightEnvironment from "../entities/LightEnvironment";
 import Floor from "../props/Floor";
 import BoxPushable from "../props/BoxPushable";
 import BoundingBox from "../entities/BoundingBox";
+import DesignScene from "./DesignScene";
 
 export default class SandboxScene extends Scene {
     constructor (backgroundColor) {
@@ -12,16 +13,20 @@ export default class SandboxScene extends Scene {
         BoundingBox.setMode('hidden');
         this.add(new LightEnvironment(0xffffff, 3));
 
-        const box = new BoxPushable;
-        box.position.set(4, 0, 5);
+        // const box = new BoxPushable;
+        // box.position.set(4, 0, 5);
         
-        const box2 = new BoxPushable;
-        box2.position.set(-1, 0, 3);
+        // const box2 = new BoxPushable;
+        // box2.position.set(-1, 0, 3);
         
         this.add(new Floor);
-        this.add(box);
-        this.add(box2);
+        // this.add(box);
+        // this.add(box2);
         
         this.add(new PlayerController("Maxence"));
+
+        fetch('http://localhost/MMO-JS-mapsave/index.php').then(res => res.json()).then(data => {
+            DesignScene.loadMap(data);
+        });
     }
 }
