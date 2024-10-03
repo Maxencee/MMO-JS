@@ -41,17 +41,16 @@ export default class Prop extends BoundingBox {
       
       if (options.position) this.position.copy(options.position);
       if (options.rotation) this.rotation.copy(options.rotation);
-      if (options.scale) this.scale.copy(options.scale);
+      if (options.scale) this.model.scale.copy(options.scale);
 
       this.model.name = path.match(/\/?(\w+)\.\w+/)[1] || "model";
       this.add(this.model);
       
       this.bounding = new THREE.Box3().setFromObject(this.model, true);
       this.size = options.boundings || this.bounding.getSize(new THREE.Vector3());
-
-      if(!options.position || !options.position.y) this.position.y = this.size.y / 2;
       
-      this.model.position.y = -this.size.y / 2;
+      if(!options.position || !options.position.y) this.position.y = this.size.y/2;
+      this.model.position.y = -this.size.y/2;
       
       this.geometry.scale(this.size.x, this.size.y, this.size.z);
 

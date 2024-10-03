@@ -20,8 +20,8 @@ export default class BoundingBox extends Mesh {
   static material = new MeshStandardMaterial({
     color: 0xffffff,
     transparent: true,
-    opacity: 0,
-    depthWrite: false,
+    opacity: 1,
+    depthWrite: true,
   });
 
   static setMode(mode) {
@@ -34,6 +34,7 @@ export default class BoundingBox extends Mesh {
       BoundingBox.material.transparent = false;
       BoundingBox.material.opacity = 1;
       BoundingBox.material.wireframe = true;
+      BoundingBox.material.depthWrite = false;
     }
 
     if (mode === "semi-solid") {

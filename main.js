@@ -11,13 +11,19 @@ import DesignScene from "./src/scenes/DesignScene";
   document.addEventListener("contextmenu", (evt) => evt.preventDefault());
   
   Process.showStats();
-  BoundingBox.setMode('hidden');
+  BoundingBox.setMode('wireframe');
 
   // First scene of the game -> home screen;
 
   const _PROCESS = new Process;
-  Process.setCamera(new ControlCamera);
-  Process.setScene(new DesignScene());
+
+  if(window.location.search === '?sandbox') {
+    Process.setCamera(new PlayerCamera);
+    Process.setScene(new SandboxScene());
+  } else if (window.location.search === '?mapping') {
+    Process.setCamera(new ControlCamera);
+    Process.setScene(new DesignScene());
+  }
 
   _PROCESS.render();
 })();

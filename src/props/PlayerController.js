@@ -144,7 +144,7 @@ export default class PlayerController extends PropDynamic {
         node.add(this.mountSlots.upgradeBody);
       }
 
-      console.log(node);
+      //console.log(node);
 
       if (node.name === "Head" && node.type === "Bone") {
         this.mountSlots.upgradeLeft = new BoundingBox(0.5, 0.5, 0.5, 0xff6a59);

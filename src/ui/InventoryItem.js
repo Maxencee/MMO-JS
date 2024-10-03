@@ -24,7 +24,7 @@ export class InventoryItem {
         ], {
           click: () => {
             const item = new PropStatic(path, {
-              position: new THREE.Vector3(),
+              position: new THREE.Vector3(0, 0, 0),
               rotation: new THREE.Euler(),
               scale: new THREE.Vector3(1, 1, 1),
               shadow: 2,
