@@ -21,13 +21,14 @@ export default class BoundingBox extends Mesh {
     color: 0xffffff,
     transparent: true,
     opacity: 0,
-    depthWrite: true,
+    depthWrite: false,
   });
 
   static setMode(mode) {
     if (mode == "solid") {
       BoundingBox.material.transparent = false;
       BoundingBox.material.opacity = 1;
+      BoundingBox.material.depthWrite = true;
     }
 
     if (mode === "wireframe") {
@@ -41,6 +42,7 @@ export default class BoundingBox extends Mesh {
       BoundingBox.material.transparent = true;
       BoundingBox.material.opacity = 0.65;
       BoundingBox.material.wireframe = false;
+      BoundingBox.material.depthWrite = true;
     }
   }
 

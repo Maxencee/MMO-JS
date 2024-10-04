@@ -18,7 +18,7 @@ export default class DesignScene extends Scene {
 
   static loadMap (data) {
     data.items.forEach(item => {
-      const prop = new PropDetail(item.model, {
+      const prop = new PropStatic(item.model, {
         position: new THREE.Vector3(item.position.x, item.position.y, item.position.z),
         rotation: new THREE.Euler(item.rotation._x, item.rotation._y, item.rotation._z),
         scale: new THREE.Vector3(item.scale.x, item.scale.y, item.scale.z),

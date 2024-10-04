@@ -236,8 +236,11 @@ export default class PlayerController extends PropDynamic {
     targetM.transparent = true;
     targetM.opacity = 0.65;
 
+    const targetC = targetM.clone();
+    targetC.opacity = 1;
+
     this.target = new Mesh(new CircleGeometry(0.2), targetM);
-    this.target.add(new Mesh(new RingGeometry(0.2, 0.25), lineMaterial));
+    this.target.add(new Mesh(new RingGeometry(0.2, 0.25), targetC));
 
     this.target.rotateX(-Math.PI / 2);
     this.target.visible = false;
