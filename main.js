@@ -17,7 +17,7 @@ import DesignScene from "./src/scenes/DesignScene";
 
   const _PROCESS = new Process;
 
-  if(window.location.search === '?sandbox') {
+  if(window.location.search === "" || window.location.search === "?" || window.location.search === '?sandbox') {
     Process.setCamera(new PlayerCamera);
     Process.setScene(new SandboxScene());
   } else if (window.location.search === '?mapping') {

@@ -30,7 +30,7 @@ export default class PropDynamic extends Prop {
     if (this.currentAnimation)
       this.animations[action]
         .reset()
-        .crossFadeFrom(this.currentAnimation.reset(), 0.2)
+        .crossFadeFrom(this.currentAnimation.reset(), 0.25)
         .play();
     this.currentAnimation = this.animations[action];
   }

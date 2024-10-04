@@ -183,7 +183,7 @@ export default class PlayerController extends PropDynamic {
     label.textContent = this.name;
     label.className = "player-name";
     this.label = new CSS2DObject(label);
-    this.label.position.set(0, this.size.y + this.position.y / 2, 0);
+    this.label.position.set(0, this.size.y, 0);
     this.label.center.set(0.48, 0);
     this.add(this.label);
 
@@ -342,7 +342,7 @@ export default class PlayerController extends PropDynamic {
   }
 
   actionLeftClick(event) {
-    console.log(event);
+    //console.log(event);
     if (event.button !== 0) return;
 
     let target = this.pointer.position.clone();

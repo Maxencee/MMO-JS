@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import BoundingBox from "./BoundingBox";
-import { FBXLoader, GLTFLoader } from "three/examples/jsm/Addons.js";
+import { FBXLoader, GLTFLoader, OBJLoader } from "three/examples/jsm/Addons.js";
 
 export default class Prop extends BoundingBox {
   static RECEIVE_SHADOW = 2;
@@ -27,9 +27,10 @@ export default class Prop extends BoundingBox {
     if(path == null) return;
 
     const isFBX = path.endsWith(".fbx");
-    const loader = isFBX ? new FBXLoader() : new GLTFLoader();
+    const isOBJ = path.endsWith(".obj");
+    const loader = isFBX ? new FBXLoader() : (isOBJ ? new OBJLoader() : new GLTFLoader());
     loader.load(path, (model) => {
-      this.model = isFBX ? model : model.scene;
+      this.model = (isFBX || isOBJ) ? model : model.scene;
       this.model.traverse((node) => {
         if (node.isMesh) {
           if (material) node.material = material;
