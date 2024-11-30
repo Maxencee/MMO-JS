@@ -3,9 +3,9 @@ logs
 *.log
 
 private/
-backup/
 animations/
-models/
+public/assets/models/nature/
+
 
 # Vite build
 build/

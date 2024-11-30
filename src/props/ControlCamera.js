@@ -1,32 +1,40 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import Process from "../classes/Process";
-import UI from "../classes/UI";
+import UI from "../runtime/UI";
 
 export default class ControlCamera extends THREE.PerspectiveCamera {
   static fov = 35;
   static near = 1;
   static far = 300;
 
-  constructor() {
+  static position = new THREE.Vector3(0, 2, 5);
+  static lookAt = new THREE.Vector3(0, 0, 0);
+
+  static dampingFactor = 0.05;
+  static minDistance = 5;
+  static maxDistance = 100;
+  static maxPolarAngle = Math.PI / 2;
+  static screenSpacePanning = false;
+
+  constructor(from = ControlCamera) {
     super(
-      ControlCamera.fov,
+      from.fov,
       window.innerWidth / window.innerHeight,
-      ControlCamera.near,
-      ControlCamera.far
+      from.near,
+      from.far
     );
 
-    this.position.set(0, 2, 3);
-    this.lookAt(new THREE.Vector3(0, 0, 0));
+    this.position.copy(from.position);
+    this.lookAt(from.lookAt);
 
     this.controls = new OrbitControls(this, UI.renderers);
-    this.controls.dampingFactor = 0.05;
+    this.controls.dampingFactor = from.dampingFactor;
 
-    this.controls.screenSpacePanning = false;
+    this.controls.screenSpacePanning = from.screenSpacePanning;
 
-    this.controls.minDistance = 5;
-    this.controls.maxDistance = 100;
+    this.controls.minDistance = from.minDistance;
+    this.controls.maxDistance = from.maxDistance;
 
-    this.controls.maxPolarAngle = Math.PI / 2;
+    this.controls.maxPolarAngle = from.maxPolarAngle;
   }
 }
