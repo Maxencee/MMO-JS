@@ -1,8 +1,7 @@
-import Process from "./src/runtime/Process";
-import Index from "./src/scenes/Index";
-import './src/index.css';
+import './index.css';
+import Process from "./runtime/Process";
+import Index from "./scenes/Index";
 
-("use strict");
 (async function () {
   document.addEventListener("contextmenu", (evt) => evt.preventDefault());
 
