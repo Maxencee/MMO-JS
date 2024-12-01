@@ -1,6 +1,6 @@
-import './index.css';
-import Process from "./runtime/Process";
-import Index from "./scenes/Index";
+import './styles/index.css';
+import Process from "./modules/runtime/Process";
+import Index from "./modules/scenes/Index";
 
 (async function () {
   document.addEventListener("contextmenu", (evt) => evt.preventDefault());

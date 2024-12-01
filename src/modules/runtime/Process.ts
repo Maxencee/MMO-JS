@@ -80,8 +80,6 @@ export default class Process {
   render() {
     if (!Process.scene || !Process.camera) {
       return;
-      cancelAnimationFrame(Process.renderID);
-      return console.error("Scene or Camera unloaded");
     }
 
     TWEEN.update();

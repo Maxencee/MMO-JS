@@ -1,10 +1,10 @@
 import * as THREE from "three";
-import LightEnvironment from "../props/LightEnvironment";
-import PlayerController from "../props/PlayerController";
+import LightEnvironment from "../light/LightEnvironment";
+import PlayerController from "../player/PlayerController";
 import Process from "../runtime/Process";
-import PlayerCamera from "../props/PlayerCamera";
-import BoundingBox from "../modules/BoundingBox";
-import PropInteractable from "../modules/PropInteractable";
+import PlayerCamera from "../player/PlayerCamera";
+import BoundingBox from "../props/BoundingBox";
+import PropInteractable from "../props/PropInteractable";
 
 export default class Index extends THREE.Scene {
   constructor() {
@@ -15,7 +15,7 @@ export default class Index extends THREE.Scene {
     BoundingBox.setMode('wireframe');
     Process.setCamera(new PlayerCamera);
 
-    const floor = new BoundingBox(20, 0.1, 20);
+    const floor = new BoundingBox(20, 0.1, 20) as BoundingBox & { isFloor: boolean };
     floor.add(new THREE.Mesh(new THREE.BoxGeometry(20, 0.1, 20), new THREE.MeshBasicMaterial({ color: 0x504763 })));
     floor.isFloor = true;
 

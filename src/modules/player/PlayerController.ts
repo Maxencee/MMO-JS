@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import TWEEN from "@tweenjs/tween.js";
-import PropDynamic from "../modules/PropDynamic";
+import PropDynamic from "../props/PropDynamic";
 import Process from "../runtime/Process";
 
 export default class PlayerController extends PropDynamic {
