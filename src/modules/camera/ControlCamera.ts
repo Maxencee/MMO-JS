@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import UI from "../runtime/UI";
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
 export default class ControlCamera extends THREE.PerspectiveCamera {
   static fov = 35;
@@ -15,6 +15,8 @@ export default class ControlCamera extends THREE.PerspectiveCamera {
   static maxDistance = 100;
   static maxPolarAngle = Math.PI / 2;
   static screenSpacePanning = false;
+
+  private controls: OrbitControls;
 
   constructor(from = ControlCamera) {
     super(

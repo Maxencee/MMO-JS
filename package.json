@@ -1,9 +1,10 @@
 {
     "devDependencies": {
+        "@rsbuild/core": "^1.1.6",
         "autoprefixer": "^10.4.19",
         "postcss": "^8.4.38",
         "tailwindcss": "^3.4.4",
-        "vite": "^5.2.6"
+        "typescript": "^5.7.2"
     },
     "dependencies": {
         "@tweenjs/tween.js": "^23.1.1",
@@ -13,8 +14,8 @@
         "three.meshline": "^1.4.0"
     },
     "scripts": {
-        "build": "vite build --base=/",
-        "preview": "vite preview",
-        "dev": "vite"
+        "dev": "rsbuild dev",
+        "build": "rsbuild build",
+        "preview": "rsbuild preview"
     }
 }

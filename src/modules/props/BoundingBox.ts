@@ -8,7 +8,7 @@ import {
 } from "three";
 
 export default class BoundingBox extends Mesh {
-  constructor(width, height, depth, color) {
+  constructor(width, height, depth, color?) {
     let material = BoundingBox.material.clone();
     material.color = new Color(color);
 

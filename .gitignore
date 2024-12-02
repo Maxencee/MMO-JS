@@ -6,8 +6,10 @@ private/
 animations/
 public/assets/models/nature/
 
+# IDE
+.idea
 
-# Vite build
+# Build
 build/
 dist/
 

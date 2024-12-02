@@ -58,7 +58,7 @@ void main() {
 // TWEEN CLASS //
 /////////////////
 
-export function Tween(timeArray, valueArray) {
+export function Tween(timeArray?, valueArray?) {
     this.times  = timeArray || [];
     this.values = valueArray || [];
 }
