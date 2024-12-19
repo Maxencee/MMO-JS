@@ -5,7 +5,7 @@ import Process from "../runtime/Process";
 
 export default class PlayerController extends PropDynamic {
     constructor () {
-        super('/assets/models/player-debug.fbx', {
+        super('/assets/models/player.fbx', {
             scale: 0.1
         });
 
@@ -55,7 +55,6 @@ export default class PlayerController extends PropDynamic {
     move (event) {
         if(event.button !== 2 || this.isLocked) return;
 
-        console.log(this.isMoving);
         if(this.interactable && !this.isMoving) return this.interactable.interact(this);
 
         this.isMoving = false;
@@ -94,7 +93,7 @@ export default class PlayerController extends PropDynamic {
             .onUpdate((position) => {
                 let [collisions, colsize] = this.getCollisions(target);
 
-                if(collisions.length && collisions[0].distance < 1.2) {
+                if(collisions.length && collisions[0].distance < 1) {
                     this.tween?.stop();
                     this.playAction('idle');
                     this.tween = null;
