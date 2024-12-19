@@ -85,7 +85,7 @@ export default class PlayerController extends PropDynamic {
             this.tween?.stop();
 
             this.tween = new TWEEN.Tween(start).to(target, (distance * 1000) / (this.speed / 100))
-            .easing(TWEEN.Easing.Linear.None)
+            .easing(TWEEN.Easing.Linear.Out)
             .delay(0)
             .onStart(() => {
                 this.isMoving = true;
