@@ -15,11 +15,11 @@ export default class PlayerController extends PropDynamic {
 
     isMoving = false;
     isLocked = false;
-    speed = 300;
+    speed = 400;
 
     tween = null;
 
-    interactable;
+    interactable : any;
 
     onModelLoaded () {
         console.log(this.animations);
