@@ -8,7 +8,7 @@ import Open from './modules/scenes/Open';
 
   const _PROCESS_ = new Process;
   
-  Process.setScene(new Open);
+  Process.setScene(new Index);
 
   _PROCESS_.render();
 })();

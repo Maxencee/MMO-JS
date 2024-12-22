@@ -63,9 +63,9 @@ export default class Open extends THREE.Scene {
         if (child.name.includes("CyberCard")) {
           child.visible = false;
 
-          child.loot = new PropDynamic(`assets/models/player.fbx`, {
-            scale: 1,
-            position: new THREE.Vector3(0, -1, -2),
+          child.loot = new PropDynamic(`assets/models/open/items/pistol.fbx`, {
+            scale: 0.2,
+            position: new THREE.Vector3(0, -1, -10),
             rotation: new THREE.Euler(Math.PI * 1.5, 0, 0)
           });
 
@@ -88,8 +88,6 @@ export default class Open extends THREE.Scene {
         openText.position.set(0, -28, 10);
         LootBox.add(openText);
 
-        const possibleLoot = ["pistol"];
-
         document.addEventListener('click', function () {
           openText.removeFromParent();
 
@@ -99,20 +97,6 @@ export default class Open extends THREE.Scene {
             const offset = [34, -6, -22][index];
 
             card.visible = true;
-
-            /* card.loot = new PropStatic(`assets/models/open/items/${possibleLoot[Math.floor(Math.random() * possibleLoot.length)]}.fbx`, {
-              scale: 0.2,
-              position: new THREE.Vector3(0, -3, -10),
-              rotation: new THREE.Euler(Math.PI * 1.5, 0, 0),
-              material: new HolographicMaterial({
-                scanlineSize: 20,
-                signalSpeed: 2,
-                hologramBrightness: 0.5,
-                hologramOpacity: 0.75,
-                hologramColor: new THREE.Color(0x00ff00),
-                enableBlinking: true
-              })
-            }); */
     
             const jumpUp = new TWEEN.Tween(card.position)
               .to({ y: card.position.y + jumpHeight, z: card.position.z + 300, x: card.position.x + offset }, 200)
