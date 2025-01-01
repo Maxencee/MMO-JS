@@ -14,12 +14,7 @@ export default class Index extends THREE.Scene {
 
     BoundingBox.setMode('wireframe');
     Process.setCamera(new PlayerCamera);
-
-    const floor = new BoundingBox(20, 0.1, 20);
-    floor.add(new THREE.Mesh(new THREE.BoxGeometry(20, 0.1, 20), new THREE.MeshBasicMaterial({ color: 0x4f4f4f })));
-    floor.isFloor = true;
-
-    this.add(floor);
+    
     this.add(new PlayerController);
     this.add(new LightEnvironment(0xfafffb, 1.5));
   }

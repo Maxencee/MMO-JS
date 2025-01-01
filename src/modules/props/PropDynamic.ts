@@ -3,26 +3,30 @@ import Prop from "./Prop";
 import Process from "../runtime/Process";
 
 export default class PropDynamic extends Prop {
-  mixer;
-  clock;
+  mixer : THREE.AnimationMixer;
+  clock : THREE.Clock;
 
-  currentAnimation;
-  animations = {};
+  currentAnimation : THREE.AnimationAction;
+
+  modelAnimations : {
+    [k: string]: THREE.AnimationAction
+  };
 
   isDynamic = true;
+
+  getAction (name : string) : THREE.AnimationClip {
+    return THREE.AnimationClip.findByName(this.model.animations, name);
+  }
 
   beforeOnModelLoaded() {
     this.clock = new THREE.Clock(true);
     this.mixer = new THREE.AnimationMixer(this.model);
-    
-    this.mixer.getAction = (name) =>
-      THREE.AnimationClip.findByName(this.model.animations, name);
 
-    this.animations = Object.fromEntries(
+    this.modelAnimations = Object.fromEntries(
       this.model.animations.map((a) => {
         return [
           a.name.split("|").pop().toLowerCase(),
-          this.mixer.clipAction(this.mixer.getAction(a.name)),
+          this.mixer.clipAction(this.getAction(a.name)),
         ];
       })
     );
@@ -32,34 +36,34 @@ export default class PropDynamic extends Prop {
     });
   }
 
-  async playActionOnce(action, to = null) {
-    let current = this.animations[to] || this.currentAnimation;
+  async playActionOnce(action : string, to = null) {
+    let current = this.modelAnimations[to] || this.currentAnimation;
 
     if(!this.playAction(action)) return;
 
     return new Promise((resolve) => {
-      this.animations[action].loop = THREE.LoopOnce;
-      this.animations[action].clampWhenFinished = true;
-      this.animations[action].reset().crossFadeFrom(current?.reset(), 0.25).play();
+      this.modelAnimations[action].loop = THREE.LoopOnce;
+      this.modelAnimations[action].clampWhenFinished = true;
+      this.modelAnimations[action].reset().crossFadeFrom(current?.reset(), 0.25, false).play();
       
       setTimeout(() => {
-        current?.reset().crossFadeFrom(this.animations[action], 0.25).play();
-        resolve(this.animations[action]);
-      }, this.animations[action].getClip().duration * 1000);
+        current?.reset().crossFadeFrom(this.modelAnimations[action], 0.25, false).play();
+        resolve(this.modelAnimations[action]);
+      }, this.modelAnimations[action].getClip().duration * 1000);
     });
   }
 
-  playAction(action) {
-    if (!this.animations || !this.animations[action])
+  playAction(action : string) {
+    if (!this.modelAnimations || !this.modelAnimations[action])
       return console.error("Action '%s' don't exist on this prop", action);
 
     if (this.currentAnimation)
-      this.animations[action]
+      this.modelAnimations[action]
         .reset()
-        .crossFadeFrom(this.currentAnimation.reset(), 0.25)
+        .crossFadeFrom(this.currentAnimation.reset(), 0.25, false)
         .play();
 
-    this.currentAnimation = this.animations[action];
+    this.currentAnimation = this.modelAnimations[action];
     return this.currentAnimation.play();
   }
 

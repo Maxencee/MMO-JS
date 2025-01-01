@@ -2,15 +2,16 @@ import {
   Box3,
   BoxGeometry,
   Color,
+  ColorRepresentation,
   Mesh,
   MeshStandardMaterial,
   Vector3,
 } from "three";
 
 export default class BoundingBox extends Mesh {
-  bounding;
+  bounding : Box3;
   
-  constructor(width, height, depth, color?) {
+  constructor(width : number, height : number, depth : number, color? : ColorRepresentation) {
     let material = BoundingBox.material.clone();
     material.color = new Color(color);
 
@@ -26,7 +27,7 @@ export default class BoundingBox extends Mesh {
     depthWrite: false,
   });
 
-  static setMode(mode) {
+  static setMode(mode : string) {
     if (mode == "solid") {
       BoundingBox.material.transparent = false;
       BoundingBox.material.opacity = 1;
